@@ -2,6 +2,6 @@ from manganelo.api.search_manga import SearchManga
 
 
 if __name__ == "__main__":
-	from manganelo.tests import test_search_manga
+	from manganelo.tests import test_manga_chapters as tests
 
-	test_search_manga.run_all_tests()
+	tests.run_all_tests()

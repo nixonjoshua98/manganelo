@@ -1,11 +1,10 @@
 import string
-import requests
 
-from bs4 import BeautifulSoup
-from typing import Union
 from dataclasses import dataclass
 
 from manganelo.common import constants
+from manganelo.api.api_base import APIBase
+from manganelo.exceptions import ObjectExpiredException
 
 
 @dataclass
@@ -14,31 +13,49 @@ class MangaSearchResult:
 	url: str
 
 
-class SearchManga:
-	def __init__(self, title: str):
+class SearchManga(APIBase):
+	def __init__(self, title: str, start: bool = False):
+		"""
+		:param title: Title of the Manga which is being searched.
+		:param start: Choose to start the search straight away
+		"""
+
 		self.__title = title
-		self.__results = []
+
+		self._results = []
 
 		self.__create_url()
 
-	def search(self):
-		soup = self.__get_soup()
+		if start:
+			self.start()
 
+	def start(self):
+		"""
+		The 'main' method of the class which gets the soup and extracts the information.
+
+		:raises ObjectExpiredException: Raises an exception which this object is re-used.
+		"""
+
+		if self._is_expired:
+			raise ObjectExpiredException(f"{__name__} should not be reused.")
+
+		self._is_expired = True
+
+		soup = self._get_soup()
+
+		# This is most likely caused because the website HTML has changed.
 		if soup is None:
 			return None
 
 		self.__scrape(soup)
-
-	@property
-	def results(self):
-		return self.__results
 
 	def __create_url(self) -> None:
 		self.__title = self.__title.lower()
 		self.__title = self.__title.replace(" ", "_")
 
 		alphanumeric = string.ascii_lowercase + string.digits
-		
+
+		# Remove punctuation etc.
 		for i in self.__title:
 			if i in {"_"}:
 				continue
@@ -46,27 +63,8 @@ class SearchManga:
 			if i not in alphanumeric:
 				self.__title = self.__title.replace(i, "")
 
-		self.__url = constants.MANGANELO_SEARCH_URL + self.__title
-
-	def __get_soup(self) -> Union[BeautifulSoup, None]:
-		headers = requests.utils.default_headers()
-
-		try:
-			r = requests.get(self.__url, stream=True, timeout=5, headers=headers)
-
-			r.raise_for_status()
-
-		except requests.exceptions.Timeout:
-			pass
-
-		except requests.exceptions.TooManyRedirects:
-			pass
-
-		except requests.exceptions.RequestException:
-			pass
-
-		else:
-			return BeautifulSoup(r.content, "html.parser") if r.status_code == requests.codes.ok else None
+		# Add the newly formatted title to the URL
+		self._url = constants.MANGANELO_SEARCH_URL + self.__title
 
 	def __scrape(self, soup):
 		panels = soup.find(class_="panel-search-story")
@@ -75,7 +73,7 @@ class SearchManga:
 		for i, ele in enumerate(stories):
 			manga = ele.find(class_="item-img")
 
-			row = MangaSearchResult(manga["title"], manga["href"])
+			row = MangaSearchResult(title=manga["title"], url=manga["href"])
 
-			self.__results.append(row)
+			self._results.append(row)
 

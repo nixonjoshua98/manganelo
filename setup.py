@@ -3,13 +3,13 @@ from distutils.core import setup
 setup(
   name="manganelo",
   packages=["manganelo"],
-  version="0.2.1",
+  version="0.3.0",
   license="MIT",
 
   description="Unofficial API for the Manganelo (and Mangakakalot) website.",
   long_description="Unofficial API for the Manganelo (and Mangakakalot) website.",
 
-  author= "Joshua Nixon",
+  author="Joshua Nixon",
   author_email="nixonjoshua98@gmail.com",
 
   url="https://github.com/nixonjoshua98/manganelo-api",
@@ -26,11 +26,10 @@ setup(
   # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
   
   classifiers=[
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",  
     "Topic :: Software Development :: Build Tools",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
   ],
 )

@@ -1,16 +1,47 @@
+
 from manganelo.api.search_manga import SearchManga
+from manganelo.tests.test_decorators import test_decorator
+from manganelo.exceptions import ObjectExpiredException
+
+title = "Naruto"
 
 
-def test_search_manga():
-	print(f"Test: {__name__}")
+@test_decorator
+def test_results_length():
+	r1 = SearchManga(title, start=True).results
+	r2 = SearchManga(title, start=True).results
+	r3 = SearchManga(title, start=True).results
 
-	search_object = SearchManga("Naruto")
+	if len(r1) == len(r2) == len(r3):
+		print("OK")
 
-	search_object.search()
 
-	print("- Title: Naruto")
-	print(f"- Num. Results: {len(search_object.results)}")
+@test_decorator
+def test_object_expiration():
+	obj = SearchManga(title, start=True)
+
+	try:
+		obj.start()
+
+	except ObjectExpiredException:
+		print("OK")
+
+
+@test_decorator
+def test_results_mutable():
+	obj = SearchManga(title, start=True)
+
+	results = obj.results
+
+	results_length = len(results)
+
+	results.pop(0)
+
+	if len(obj.results) == results_length:
+		print("OK")
 
 
 def run_all_tests():
-	test_search_manga()
+	test_results_length()
+	test_object_expiration()
+	test_results_mutable()
