@@ -14,7 +14,7 @@ setup(
 
   url="https://github.com/nixonjoshua98/manganelo-api",
 
-  download_url="https://github.com/nixonjoshua98/manganelo-api/archive/v0.3.tar.gz",
+  download_url="https://github.com/nixonjoshua98/manganelo-api/archive/v0.3.0.tar.gz",
   
   keywords=["manga", "manganelo", "scrapper", "web", "mangakakalot"],
   
