@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
   name="manganelo",
   packages=["manganelo"],
-  version="0.3.0",
+  version="0.3",
   license="MIT",
 
   description="Unofficial API for the Manganelo (and Mangakakalot) website.",
@@ -14,7 +14,7 @@ setup(
 
   url="https://github.com/nixonjoshua98/manganelo-api",
 
-  download_url="https://github.com/nixonjoshua98/manganelo-api/archive/v0.2.1.tar.gz",
+  download_url="https://github.com/nixonjoshua98/manganelo-api/archive/v0.3.tar.gz",
   
   keywords=["manga", "manganelo", "scrapper", "web", "mangakakalot"],
   

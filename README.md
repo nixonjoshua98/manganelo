@@ -13,18 +13,20 @@ pip install manganelo
 
 ## Usage
 
-**Searching**
+**Getting the chapter list of every search result**
 ```python
 import manganelo
 
 search_object = manganelo.SearchManga("Naruto")
 
-search_object.search()
+search_object.start()
 
 for result in search_object.results:
-    print(result.title)
+    chapters = manganelo.MangaChapters(result.url, start=True)
+    
+    for c in chapters.results:
+        print(c.url, c.chapter_num)
 ```
 
 ## TODO
-- Add chapter list extraction (completed but need to package it up)
 - Download chapters (completed but need to add error handling)
