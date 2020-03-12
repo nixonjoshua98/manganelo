@@ -1,38 +1,46 @@
 import requests
+import validators
 
-from typing import Union
+from manganelo.common import exceptions
+
 from bs4 import BeautifulSoup
 
-
 class APIBase:
-	_url = None
-	_is_expired = False
-	_results = []
-
-	def _get_soup(self) -> Union[BeautifulSoup, None]:
-		"""
-		Sends the server requests and soups the content.
-
-		:returns: Returns either None or a soup object.
+	def __init__(self, url: str = None):
 		"""
 
-		headers = requests.utils.default_headers()
+		:param url:
+		"""
+		self._url = url
+		self._raw_soup = None
 
-		try:
-			r = requests.get(self._url, stream=True, timeout=5, headers=headers)
+	def get(self):
+		raise NotImplementedError("APIBase.get -> NotImplemented")
 
-			r.raise_for_status()  # Raise for 404 etc.
+	def _request_and_create_soup(self) -> bool:
+		"""
+		Send the request and turn the result into soup
 
-		except requests.exceptions.Timeout:
-			return None
+		:return:
+		"""
+		default_headers = requests.utils.default_headers()
+
+		# Send the request...
+		r = requests.get(self._url, stream=True, timeout=5, headers=default_headers)
+
+		# Set the soup value if the request went through OK
+		if r.status_code == requests.codes.ok:
+			self._raw_soup = BeautifulSoup(r.content, "html.parser")
+
+			return self._raw_soup is not None  # True
+
 		else:
-			return BeautifulSoup(r.content, "html.parser") if r.status_code == requests.codes.ok else None
+			return False
 
-	@property
-	def results(self):
+	def _validate_url(self) -> None:
 		"""
-		:returns: Returns a copy of the 'private' attribute, so that the user cannot
-				edit the internal structure.
+		:return:
+		:raises ChapterListInvalidURL: Raises if URL is invalid
 		"""
-
-		return self._results[::]
+		if not validators.url(self._url):
+			raise exceptions.ChapterListInvalidURL(f"'{self._url}' is invalid")

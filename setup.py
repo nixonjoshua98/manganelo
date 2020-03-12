@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
   name="manganelo",
   packages=["manganelo"],
-  version="0.3",
+  version="1.0",
   license="MIT",
 
   description="Unofficial API for the Manganelo (and Mangakakalot) website.",
@@ -20,13 +20,12 @@ setup(
   
   install_requires=[
     "bs4",
-    "requests"
+    "requests",
+    "validators"
   ],
 
-  # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
-  
   classifiers=[
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",  
     "Topic :: Software Development :: Build Tools",
     "License :: OSI Approved :: MIT License",
