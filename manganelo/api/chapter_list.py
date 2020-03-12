@@ -19,8 +19,6 @@ class ChapterList(APIBase):
 
 		self._chapters_soup = None
 
-		self._validate_url()
-
 	def __str__(self) -> str:
 		"""
 		:return: Return the url which is passed at initialisation

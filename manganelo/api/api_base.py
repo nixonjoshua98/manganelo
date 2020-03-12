@@ -1,9 +1,7 @@
 import requests
-import validators
-
-from manganelo.common import exceptions
 
 from bs4 import BeautifulSoup
+
 
 class APIBase:
 	def __init__(self, url: str = None):
@@ -36,11 +34,3 @@ class APIBase:
 
 		else:
 			return False
-
-	def _validate_url(self) -> None:
-		"""
-		:return:
-		:raises ChapterListInvalidURL: Raises if URL is invalid
-		"""
-		if not validators.url(self._url):
-			raise exceptions.ChapterListInvalidURL(f"'{self._url}' is invalid")
