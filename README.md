@@ -2,7 +2,7 @@
 
 Package to scrape the website Manganelo (and Mangakakalot).
 
-Need something? Send me an email at nixonjoshua98 (at) gmail (dot) com.
+_nixonjoshua98@gmail.com_
 
 ## Installation
 
@@ -11,22 +11,22 @@ Need something? Send me an email at nixonjoshua98 (at) gmail (dot) com.
 pip install manganelo
 ```
 
-## Usage
+## Example
 
-**Getting the chapter list of every search result**
 ```python
-import manganelo
-
-search_object = manganelo.SearchManga("Naruto")
-
-search_object.start()
-
-for result in search_object.results:
-    chapters = manganelo.MangaChapters(result.url, start=True)
+with MangaSearch("Naruto") as search_object:
+    results = list(search_object.results())
     
-    for c in chapters.results:
-        print(c.url, c.chapter_num)
-```
+    naruto = results[0]
 
-## TODO
-- Download chapters (completed but need to add error handling)
+with ChapterList(naruto.url) as chap_list:
+    chapters = list(chap_list.results())
+
+with MangaInfo(naruto.url) as info:
+    naruto_info = info.result()
+
+print("Title:", naruto_info.title)
+print("Authors:", ",".join(naruto_info.authors))
+print("Total Chapters:", len(chapters))
+print("Latest Chapter URL:", chapters[-1].url)
+```
