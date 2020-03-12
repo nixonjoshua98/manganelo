@@ -31,7 +31,7 @@ class ChapterList(APIBase):
 
 		:return: Return the instance
 		"""
-		self.get()
+		self.start()
 
 		return self
 
@@ -45,7 +45,7 @@ class ChapterList(APIBase):
 		:return:
 		"""
 
-	def get(self):
+	def start(self):
 		"""
 		Sends the page request and creates the soup ready for the results generator
 

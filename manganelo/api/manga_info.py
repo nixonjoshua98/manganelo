@@ -31,7 +31,7 @@ class MangaInfo(APIBase):
 
 		:return: Return the instance
 		"""
-		self.get()
+		self.start()
 
 		return self
 
@@ -45,7 +45,7 @@ class MangaInfo(APIBase):
 		:return:
 		"""
 
-	def get(self) -> None:
+	def start(self) -> None:
 		self._request_and_create_soup()
 
 		self._info_panel = self._raw_soup.find(class_="panel-story-info")

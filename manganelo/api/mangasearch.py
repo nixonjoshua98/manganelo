@@ -42,7 +42,7 @@ class MangaSearch(APIBase):
 
 		:return: Return the instance
 		"""
-		self.get()
+		self.start()
 
 		return self
 
@@ -56,7 +56,7 @@ class MangaSearch(APIBase):
 		:return:
 		"""
 
-	def get(self) -> None:
+	def start(self) -> None:
 		"""
 		Sends the page request and creates the soup ready for the results generator
 

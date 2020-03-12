@@ -12,7 +12,7 @@ class APIBase:
 		self._url = url
 		self._raw_soup = None
 
-	def get(self):
+	def start(self):
 		raise NotImplementedError("APIBase.get -> NotImplemented")
 
 	def _request_and_create_soup(self) -> bool:
