@@ -1,36 +1,17 @@
 import requests
+import typing
 
 from bs4 import BeautifulSoup
 
 
 class APIBase:
-	def __init__(self, url: str = None):
-		"""
+	SEARCH_URL = "http://manganelo.com/search/"
 
-		:param url:
-		"""
-		self._url = url
-		self._raw_soup = None
-
-	def start(self):
-		raise NotImplementedError("APIBase.get -> NotImplemented")
-
-	def _request_and_create_soup(self) -> bool:
-		"""
-		Send the request and turn the result into soup
-
-		:return:
-		"""
+	def _get_soup(self) -> typing.Union[BeautifulSoup, None]:
 		default_headers = requests.utils.default_headers()
 
-		# Send the request...
 		r = requests.get(self._url, stream=True, timeout=5, headers=default_headers)
 
-		# Set the soup value if the request went through OK
-		if r.status_code == requests.codes.ok:
-			self._raw_soup = BeautifulSoup(r.content, "html.parser")
+		r.raise_for_status()
 
-			return self._raw_soup is not None  # True
-
-		else:
-			return False
+		return BeautifulSoup(r.content, "html.parser") if r.status_code == requests.codes.ok else None

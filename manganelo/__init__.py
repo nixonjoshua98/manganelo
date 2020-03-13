@@ -4,20 +4,24 @@ from manganelo.api import ChapterList
 from manganelo.api import MangaInfo
 
 if __name__ == "__main__":
-	with MangaSearch("Naruto") as search_object:
-		results = list(search_object.results())
+	TITLE = "Nar"
 
-		naruto = results[0]
+	print("Search:", TITLE)
 
-	with ChapterList(naruto.url) as chap_list:
-		chapters = list(chap_list.results())
+	results = MangaSearch(TITLE)
 
-	with MangaInfo(naruto.url) as info:
-		naruto_info = info.result()
+	print("Num. results:", len(results))
 
-	print("Title:", naruto_info.title)
-	print("Authors:", ",".join(naruto_info.authors))
+	first_result = results[0]
 
-	print("Total Chapters:", len(chapters))
+	print("URL:", first_result.url)
 
-	print("Latest Chapter URL:", chapters[-1].url)
+	print("Title:", first_result.title)
+
+	chap_list = ChapterList(first_result.url)
+
+	print("Num. Chapters:", len(chap_list))
+
+	info = MangaInfo(first_result.url)
+
+	print("Status:", info.status)

@@ -1,3 +1,5 @@
+from __future__ import annotations  # Allows type hinting of own class (default in Python 4.0)
+
 import ast
 import typing
 import dataclasses
@@ -10,66 +12,32 @@ class MangaChapter:
 	chapter_num: float
 
 
-class ChapterList(APIBase):
+class ChapterList(list, APIBase):
 	def __init__(self, url: str) -> None:
-		"""
-		:param url: The URL for the main page of the Manga
-		"""
-		super().__init__(url=url)
+		super().__init__()
 
-		self._chapters_soup = None
+		self._url = url
 
-	def __str__(self) -> str:
-		"""
-		:return: Return the url which is passed at initialisation
-		"""
-		return self._url
+		self._page_soup = self._get_soup()
+
+		self._get_results()
 
 	def __enter__(self):
-		"""
-		Entry point for context manager
-
-		:return: Return the instance
-		"""
-		self.start()
-
 		return self
 
 	def __exit__(self, exc_type, exc_val, exc_tb):
-		"""
-		Exit point for the context managers, no need to do anything here
+		""" Context manager exit point """
 
-		:param exc_type:
-		:param exc_val:
-		:param exc_tb:
-		:return:
-		"""
+	def _get_results(self) -> typing.Iterable[MangaChapter]:
+		panels = self._page_soup.find(class_="panel-story-chapter-list")
 
-	def start(self):
-		"""
-		Sends the page request and creates the soup ready for the results generator
+		chapters_soup = panels.find_all(class_="a-h")
 
-		:return:
-		:raises RequestFailedError: Raises if request and soupify'ing failed
-		"""
-		self._request_and_create_soup()
-
-		panels = self._raw_soup.find(class_="panel-story-chapter-list")
-
-		self._chapters_soup = panels.find_all(class_="a-h")
-
-	def results(self) -> typing.Iterable[MangaChapter]:
-		"""
-		Extracts the relevant information from the soup and yields a result
-
-		:return:
-		"""
-		def remove_redundant_zeroes(n: str):
-			return int(n) if str(n).count(".") == 0 or str(n).endswith(".0") else float(n)
-
-		for i, ele in enumerate(reversed(self._chapters_soup)):
+		for i, ele in enumerate(reversed(chapters_soup)):
 			url = ele.find("a")["href"]
 
-			chapter = ast.literal_eval(url.split("chapter_")[-1])
+			chapter_num = ast.literal_eval(url.split("chapter_")[-1])
 
-			yield MangaChapter(url=url, chapter_num=chapter)
+			chapter = MangaChapter(url=url, chapter_num=chapter_num)
+
+			self.append(chapter)
