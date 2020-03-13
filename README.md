@@ -1,8 +1,8 @@
 # Unofficial Manganelo API
 
-Package to scrape the website Manganelo (and Mangakakalot).
+#### Package to scrape the website Manganelo (and Mangakakalot).
 
-_nixonjoshua98@gmail.com_
+_nixonjoshua98 at gmail dot com_
 
 ## Installation
 
@@ -11,22 +11,33 @@ _nixonjoshua98@gmail.com_
 pip install manganelo
 ```
 
-## Example
+## Examples
+##### Searching
 
 ```python
-with MangaSearch("Naruto") as search_object:
-    results = list(search_object.results())
-    
-    naruto = results[0]
+results = MangaSearch("God")
 
-with ChapterList(naruto.url) as chap_list:
-    chapters = list(chap_list.results())
+for r in results:
+    print(r.title, r.url)
+```
 
-with MangaInfo(naruto.url) as info:
-    naruto_info = info.result()
+##### Information
 
-print("Title:", naruto_info.title)
-print("Authors:", ",".join(naruto_info.authors))
-print("Total Chapters:", len(chapters))
-print("Latest Chapter URL:", chapters[-1].url)
+```python
+info = MangaInfo("https://manganelo.com/manga/martial_gods_space")
+
+print("Title:", info.title)
+print("Authors:", info.authors)
+print("Genres:", info.genres)
+print("Alt Titles:", info.alt_titles)
+print("Status:", info.status)
+```
+
+##### Chapter List
+
+```python
+chapters = ChapterList("https://manganelo.com/manga/everlasting_god_of_sword")
+
+for c in chapters:
+    print(c.url, c.chapter_num)
 ```

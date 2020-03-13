@@ -11,6 +11,7 @@ class MangaInfo(APIBase):
 	genres: typing.List[str]
 	alt_titles: typing.List[str]
 	status: str
+	url: str
 
 	def __init__(self, url: str):
 		super().__init__()
@@ -46,6 +47,7 @@ class MangaInfo(APIBase):
 			"genres": [genre.strip() for genre in table_values[3].text.split("-")],
 			"alt_titles": table_values[0].text,
 			"status": table_values[2].text,
+			"url": self._url
 		}
 
 		for k, v in self._values.items():
