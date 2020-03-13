@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
   name="manganelo",
   packages=find_packages(),
-  version="1.0",
+  version="1.1.1",
   license="MIT",
 
   long_description_content_type="text/markdown",
@@ -19,7 +19,7 @@ setup(
 
   url="https://github.com/nixonjoshua98/manganelo",
 
-  download_url="https://github.com/nixonjoshua98/manganelo/archive/v1.0.tar.gz",
+  download_url="https://github.com/nixonjoshua98/manganelo/archive/v1.1.1.tar.gz",
   
   keywords=["manga", "manganelo", "scrapper", "web", "mangakakalot"],
   
@@ -29,7 +29,7 @@ setup(
   ],
 
   classifiers=[
-    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Development Status :: 5 - Production/Stable",
