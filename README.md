@@ -21,23 +21,14 @@ for r in results:
     print(r.title, r.url)
 ```
 
-##### Information
+##### Manga Main Page (Home screen of each manga)
 
 ```python
 info = MangaInfo("https://manganelo.com/manga/martial_gods_space")
 
 print("Title:", info.title)
 print("Authors:", info.authors)
+print("Num. Chapters:", len(info.chapters))
 print("Genres:", info.genres)
-print("Alt Titles:", info.alt_titles)
 print("Status:", info.status)
-```
-
-##### Chapter List
-
-```python
-chapters = ChapterList("https://manganelo.com/manga/everlasting_god_of_sword")
-
-for c in chapters:
-    print(c.url, c.chapter_num)
 ```
