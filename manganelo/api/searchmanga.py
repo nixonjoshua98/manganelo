@@ -15,9 +15,9 @@ class SearchManga(list, APIBase):
 	def __init__(self, title: str) -> None:
 		super().__init__()
 
-		self.url = self._SEARCH_URL + self._format_title(title)
+		self._url = self._SEARCH_URL + self._format_title(title)
 
-		self._page_soup = self._get_soup(self.url)
+		self._page_soup = self._get_soup(self._url)
 
 		self._perform_search()
 

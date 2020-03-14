@@ -1,8 +1,8 @@
 import dataclasses
-import typing
 import ast
 
 from manganelo.api import APIBase
+
 
 @dataclasses.dataclass
 class MangaChapter:
@@ -28,9 +28,13 @@ class MangaInfo(dict, APIBase):
 
 	def _parse_info(self):
 		# Elements
-		info_panel 		= self._page_soup.find(class_="panel-story-info")
-		info_right 		= info_panel.find(class_="story-info-right")
-		right_extend 	= info_panel.find(class_="story-info-right-extent")
+		info_panel = self._page_soup.find(class_="panel-story-info")
+		info_right = info_panel.find(class_="story-info-right")
+		info_left = info_panel.find(class_="story-info-left")
+		right_extend = info_panel.find(class_="story-info-right-extent")
+		description = info_panel.find(class_="panel-story-info-description")
+		image = info_left.find(class_="info-image")
+		icon = image.find("img")
 
 		try:
 			last_updated_ele, views_ele, *_ = right_extend.find_all("span", class_="stre-value")
@@ -40,19 +44,22 @@ class MangaInfo(dict, APIBase):
 		table = self._parse_table()
 
 		# Data
-		url			= self._url
-		authors		= table["author"]
-		status		= table["status"]
-		genres 		= table["genres"]
-		alt_titles 	= table.get("alternative", [])
-		chapters 	= self._get_chapter_list()
-		views 		= int(views_ele.text.replace(",", ""))
-		updated_on	= last_updated_ele.text if last_updated_ele is not None else None
-		title		= info_right.find("h1").text if info_right is not None else None
+		url = self._url
+		authors = table["author"]
+		status = table["status"]
+		genres = table["genres"]
+		alt_titles = table.get("alternative", [])
+		chapters = self._get_chapter_list()
+		views = int(views_ele.text.replace(",", ""))
+		updated_on = last_updated_ele.text.strip() if last_updated_ele is not None else None
+		title = info_right.find("h1").text.strip() if info_right is not None else None
+		desc = description.text.replace("Description :", "").strip()
+		icon_url = icon.get("src", None)
 
 		self.update({
 			"url": url, "authors": authors, "status": status, "genres": genres, "alt_titles": alt_titles,
-			"chapters": chapters, "views": views, "updated_on": updated_on, "title": title
+			"chapters": chapters, "views": views, "updated_on": updated_on, "title": title, "desc": desc,
+			"icon_url": icon_url
 			})
 
 	def _get_chapter_list(self):
