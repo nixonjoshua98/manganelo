@@ -1,10 +1,12 @@
 
-from manganelo.api import MangaSearch
+from manganelo.api import SearchManga
 from manganelo.api import MangaInfo
 
 if __name__ == "__main__":
-	info = MangaInfo("https://manganelo.com/manga/zp922428")
+	naruto = SearchManga("Naruto")[0]
 
-	for k, v in info.values.items():
+	info = MangaInfo(naruto.url)
+
+	for k, v in info.items():
 		print(f"{k}: {v}")
 

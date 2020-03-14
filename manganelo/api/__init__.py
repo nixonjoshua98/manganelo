@@ -1,6 +1,6 @@
 
 from .api_base import APIBase
 
-from .mangasearch import MangaSearch
+from .searchmanga import SearchManga
 from .mangainfo import MangaInfo
 

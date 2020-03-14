@@ -1,5 +1,3 @@
-from __future__ import annotations  # Allows type hinting of own class (default in Python 4.0)
-
 import string
 import typing
 import dataclasses
@@ -13,17 +11,17 @@ class MangaSearchResult:
 	url: str
 
 
-class MangaSearch(list, APIBase):
+class SearchManga(list, APIBase):
 	def __init__(self, title: str) -> None:
 		super().__init__()
 
-		self.url = self.SEARCH_URL + self._format_title(title)
+		self.url = self._SEARCH_URL + self._format_title(title)
 
 		self._page_soup = self._get_soup()
 
 		self._get_results()
 
-	def __enter__(self) -> MangaSearch:
+	def __enter__(self):
 		return self
 
 	def __exit__(self, exc_type, exc_val, exc_tb) -> None:
@@ -31,6 +29,9 @@ class MangaSearch(list, APIBase):
 
 	def _get_results(self) -> typing.Iterable[MangaSearchResult]:
 		panels = self._page_soup.find(class_="panel-search-story")
+
+		if panels is None:
+			raise Exception("Search failed")
 
 		stories = panels.find_all(class_="search-story-item")
 
@@ -46,7 +47,7 @@ class MangaSearch(list, APIBase):
 			self.append(manga_result)
 
 	def _format_title(self, title: str) -> str:
-		allowed_characters = string.ascii_letters + string.digits + "_"\
+		allowed_characters = string.ascii_letters + string.digits + "_"
 
 		# Remove all characters which are not allowed and replace spaces with underscores
 		return "".join([char.lower() for char in title.replace(" ", "_") if char in allowed_characters])

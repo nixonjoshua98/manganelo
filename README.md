@@ -2,7 +2,7 @@
 
 #### Package to scrape the website Manganelo (and Mangakakalot).
 
-_nixonjoshua98 at gmail dot com_
+nixonjoshua98 at gmail dot com
 
 ## Installation
 
@@ -11,24 +11,13 @@ _nixonjoshua98 at gmail dot com_
 pip install manganelo
 ```
 
-## Examples
-##### Searching
+## Example
 
 ```python
-results = MangaSearch("God")
+naruto = SearchManga("Naruto")[0]
 
-for r in results:
-    print(r.title, r.url)
-```
+info = MangaInfo(naruto.url)
 
-##### Manga Main Page (Home screen of each manga)
-
-```python
-info = MangaInfo("https://manganelo.com/manga/martial_gods_space")
-
-print("Title:", info.title)
-print("Authors:", info.authors)
-print("Num. Chapters:", len(info.chapters))
-print("Genres:", info.genres)
-print("Status:", info.status)
+for k, v in info.items():
+    print(f"{k}: {v}")
 ```

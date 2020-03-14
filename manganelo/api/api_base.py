@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 
 class APIBase:
-	SEARCH_URL = "http://manganelo.com/search/"
+	_SEARCH_URL = "http://manganelo.com/search/"
 
 	def _get_soup(self) -> typing.Union[BeautifulSoup, None]:
 		default_headers = requests.utils.default_headers()

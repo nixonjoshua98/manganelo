@@ -10,30 +10,15 @@ class MangaChapter:
 	chapter_num: float
 
 
-class MangaInfo(APIBase):
-	url 		= None
-	authors 	= None
-	status 		= None
-	genres 		= None
-	alt_titles 	= None
-	chapters 	= None
-	views 		= None
-	updated_on 	= None
-	title 		= None
-
+class MangaInfo(dict, APIBase):
 	def __init__(self, url: str):
 		super().__init__()
 
 		self.url = url
 
-		self.values = {}
-
 		self._page_soup = self._get_soup()
 
 		self._parse()
-
-	def __str__(self):
-		return self.url
 
 	def __enter__(self):
 		return self
@@ -55,21 +40,20 @@ class MangaInfo(APIBase):
 		table = self._parse_table()
 
 		# Data
-		self.url		= self.url
-		self.authors	= table["author"]
-		self.status		= table["status"]
-		self.genres 	= table["genres"]
-		self.alt_titles = table.get("alternative", [])
-		self.chapters 	= self._get_chapter_list()
-		self.views 		= int(views_ele.text.replace(",", ""))
-		self.updated_on	= last_updated_ele.text if last_updated_ele is not None else None
-		self.title		= info_right.find("h1").text if info_right is not None else None
+		url			= self.url
+		authors		= table["author"]
+		status		= table["status"]
+		genres 		= table["genres"]
+		alt_titles 	= table.get("alternative", [])
+		chapters 	= self._get_chapter_list()
+		views 		= int(views_ele.text.replace(",", ""))
+		updated_on	= last_updated_ele.text if last_updated_ele is not None else None
+		title		= info_right.find("h1").text if info_right is not None else None
 
-		self.values = {
-			"url": self.url, "authors": self.authors, "status": self.status, "genres": self.genres,
-			"alt_titles": self.alt_titles, "chapters": self.chapters, "views": self.views,
-			"updated_on": self.updated_on, "title": self.title
-		}
+		self.update({
+			"url": url, "authors": authors, "status": status, "genres": genres, "alt_titles": alt_titles,
+			"chapters": chapters, "views": views, "updated_on": updated_on, "title": title
+			})
 
 	def _get_chapter_list(self):
 		panels = self._page_soup.find(class_="panel-story-chapter-list")
