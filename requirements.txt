@@ -4,6 +4,8 @@ certifi==2019.11.28
 chardet==3.0.4
 decorator==4.4.2
 idna==2.9
+Pillow==7.0.0
+reportlab==3.5.34
 requests==2.23.0
 six==1.14.0
 soupsieve==2.0

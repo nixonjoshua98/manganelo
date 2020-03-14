@@ -17,9 +17,9 @@ class SearchManga(list, APIBase):
 
 		self.url = self._SEARCH_URL + self._format_title(title)
 
-		self._page_soup = self._get_soup()
+		self._page_soup = self._get_soup(self.url)
 
-		self._get_results()
+		self._perform_search()
 
 	def __enter__(self):
 		return self
@@ -27,7 +27,7 @@ class SearchManga(list, APIBase):
 	def __exit__(self, exc_type, exc_val, exc_tb) -> None:
 		""" Context manager exit method """
 
-	def _get_results(self) -> typing.Iterable[MangaSearchResult]:
+	def _perform_search(self) -> typing.Iterable[MangaSearchResult]:
 		panels = self._page_soup.find(class_="panel-search-story")
 
 		if panels is None:

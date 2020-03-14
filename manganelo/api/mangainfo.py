@@ -14,11 +14,11 @@ class MangaInfo(dict, APIBase):
 	def __init__(self, url: str):
 		super().__init__()
 
-		self.url = url
+		self._url = url
 
-		self._page_soup = self._get_soup()
+		self._page_soup = self._get_soup(url)
 
-		self._parse()
+		self._parse_info()
 
 	def __enter__(self):
 		return self
@@ -26,7 +26,7 @@ class MangaInfo(dict, APIBase):
 	def __exit__(self, exc_type, exc_val, exc_tb):
 		""" Context manager exit point """
 
-	def _parse(self):
+	def _parse_info(self):
 		# Elements
 		info_panel 		= self._page_soup.find(class_="panel-story-info")
 		info_right 		= info_panel.find(class_="story-info-right")
@@ -40,7 +40,7 @@ class MangaInfo(dict, APIBase):
 		table = self._parse_table()
 
 		# Data
-		url			= self.url
+		url			= self._url
 		authors		= table["author"]
 		status		= table["status"]
 		genres 		= table["genres"]
