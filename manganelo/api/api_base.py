@@ -10,7 +10,7 @@ class APIBase:
 	def _get_soup(self) -> typing.Union[BeautifulSoup, None]:
 		default_headers = requests.utils.default_headers()
 
-		r = requests.get(self._url, stream=True, timeout=5, headers=default_headers)
+		r = requests.get(self.url, stream=True, timeout=5, headers=default_headers)
 
 		r.raise_for_status()
 
