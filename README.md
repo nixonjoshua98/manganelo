@@ -1,6 +1,7 @@
 # Unofficial Manganelo API
+######Pull requests and feature requests OK
 
-#### Package to scrape the website Manganelo (and Mangakakalot).
+#### Package to scrape the website Manganelo (and Mangakakalot)
 
 nixonjoshua98 at gmail dot com
 
