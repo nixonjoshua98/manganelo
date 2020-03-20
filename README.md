@@ -1,5 +1,5 @@
 # Unofficial Manganelo API
-######Pull requests and feature requests OK
+###### Pull requests welcomed
 
 #### Package to scrape the website Manganelo (and Mangakakalot)
 
