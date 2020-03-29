@@ -1,53 +1,82 @@
 import string
-import typing
-import dataclasses
+import requests
 
-from manganelo.api import APIBase
+from dataclasses import dataclass
+from bs4 import BeautifulSoup
+
+from manganelo.errors import (TagNotFound, RequestFailed)
 
 
-@dataclasses.dataclass
+@dataclass
 class MangaSearchResult:
 	title: str
 	url: str
 
 
-class SearchManga(list, APIBase):
+class SearchManga:
 	def __init__(self, title: str) -> None:
-		super().__init__()
+		self.results = []
+		self.url = "http://manganelo.com/search/" + self._format_title(title)
 
-		self._url = self._SEARCH_URL + self._format_title(title)
+	def start(self):
+		response = self._send_request(self.url)
 
-		self._page_soup = self._get_soup(self._url)
+		if response is None:
+			raise RequestFailed(f"Request failed")
 
-		self._perform_search()
-
-	def __enter__(self):
-		return self
-
-	def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-		""" Context manager exit method """
-
-	def _perform_search(self) -> typing.Iterable[MangaSearchResult]:
-		panels = self._page_soup.find(class_="panel-search-story")
+		soup = BeautifulSoup(response.content, "html.parser")
+		panels = soup.find(class_="panel-search-story")
 
 		if panels is None:
-			raise Exception("Search failed")
+			raise TagNotFound(f"Tag 'panel-search-story' not found in response HTML")
 
 		stories = panels.find_all(class_="search-story-item")
 
-		# Iterate through the soup and extract the information
 		for i, ele in enumerate(stories):
 			item = ele.find(class_="item-img")
 
-			title = item["title"]
-			link = item["href"]
+			if item is None:
+				raise TagNotFound(f"Tag 'item-img' not found in response HTML")
+
+			title, link = item["title"], item["href"]
 
 			manga_result = MangaSearchResult(title=title, url=link)
 
-			self.append(manga_result)
+			self.results.append(manga_result)
 
-	def _format_title(self, title: str) -> str:
-		allowed_characters = string.ascii_letters + string.digits + "_"
+	@staticmethod
+	def _send_request(url):
+		default_headers = requests.utils.default_headers()
 
-		# Remove all characters which are not allowed and replace spaces with underscores
+		r = requests.get(url, stream=True, timeout=5, headers=default_headers)
+
+		r.raise_for_status()
+
+		if r.status_code == requests.codes.ok:
+			return r
+
+	@staticmethod
+	def _format_title(title: str) -> str:
+		allowed_characters: str = string.ascii_letters + string.digits + "_"
+
 		return "".join([char.lower() for char in title.replace(" ", "_") if char in allowed_characters])
+
+	def __enter__(self):
+		self.start()
+
+		return self
+
+	def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+		pass
+
+	def __len__(self) -> int:
+		return len(self.results)
+
+	def __getitem__(self, item):
+		return self.results[item]
+
+	def __contains__(self, item):
+		return item in self.results
+
+	def __iter__(self):
+		return iter(self.results)

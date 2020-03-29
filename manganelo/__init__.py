@@ -3,15 +3,16 @@ from manganelo.api import SearchManga
 from manganelo.api import MangaInfo
 from manganelo.api import DownloadChapter
 
+from manganelo import api_
+
 if __name__ == "__main__":
-	naruto = SearchManga("Naruto")[0]
+	search = api_.SearchMangaThread("Naruto")
 
-	info = MangaInfo(naruto.url)
+	search.start()
 
-	for k, v in info.items():
-		print(f"{k}: {v}")
+	# do stuff here while we search in the background
 
-	download = DownloadChapter(info["chapters"][0].url, "./Naruto.pdf")
+	search.wait()
 
-	print(f"Downloaded: {download.ok}")
-
+	for r in search:
+		print(r)
