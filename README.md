@@ -11,7 +11,8 @@ nixonjoshua98 at gmail dot com
 pip install manganelo
 ```
 
-## Usages
+Usages
+-
 
 **Manga Search**
 
@@ -54,7 +55,8 @@ for chapter in info.get("chapters", []):
     print(f"Downloaded: {dl.ok}")
 ```
 
-### Extra API
+Extra API
+-
 An extra set of functionality can be found in **manganelo.api_** which are currently being developed and tested
 
 ```python
@@ -71,3 +73,8 @@ search.wait()  # Wait for the search to finish if it hasn't already
 for r in search:
     print(r)
 ```
+
+TODO
+-
+- Better exceptions + handle exceptions in threaded API
+- Match MangaInfo to the same usage as SearchManga
