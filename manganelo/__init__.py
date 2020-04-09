@@ -1,18 +1,14 @@
 
-from manganelo.api import SearchManga
-from manganelo.api import MangaInfo
-from manganelo.api import DownloadChapter
+from manganelo.api import (MangaInfo, SearchManga, DownloadChapter)
 
-from manganelo import api_
+from manganelo import extras
+
+__ALL__ = (
+	"extras",
+	"MangaInfo",
+	"SearchManga",
+	"DownloadChapter"
+)
 
 if __name__ == "__main__":
-	search = api_.SearchMangaThread("Naruto")
-
-	search.start()
-
-	# do stuff here while we search in the background
-
-	search.wait()
-
-	for r in search:
-		print(r)
+	pass

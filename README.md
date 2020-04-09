@@ -4,7 +4,8 @@
 
 nixonjoshua98 at gmail dot com
 
-## Installation
+Installation
+-
 
 **Python 3.7.x**
 ```cmd
@@ -57,12 +58,13 @@ for chapter in info.get("chapters", []):
 
 Extra API
 -
-An extra set of functionality can be found in **manganelo.api_** which are currently being developed and tested
+
+An extra set of functionality can be found in **manganelo.extras** which are currently being developed and tested
 
 ```python
-from manganelo import api_
+from manganelo import extras
 
-search = api_.SearchMangaThread("Naruto")
+search = extras.SearchMangaThread("Naruto")
 
 search.start()  # Start the search thread
 
@@ -73,8 +75,3 @@ search.wait()  # Wait for the search to finish if it hasn't already
 for r in search:
     print(r)
 ```
-
-TODO
--
-- Better exceptions + handle exceptions in threaded API
-- Match MangaInfo to the same usage as SearchManga

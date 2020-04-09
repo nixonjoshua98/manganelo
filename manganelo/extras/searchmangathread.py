@@ -4,10 +4,10 @@ from manganelo.api import SearchManga
 
 
 class SearchMangaThread(SearchManga):
-    def __init__(self, title: str):
-        super().__init__(title)
+    def __init__(self, query: str):
+        super(SearchMangaThread, self).__init__(query)
 
-        self._thread = threading.Thread(target=super().start)
+        self._thread = threading.Thread(target=super(SearchMangaThread, self).start)
 
     def start(self):
         self._thread.start()
@@ -21,6 +21,7 @@ class SearchMangaThread(SearchManga):
 
     def __enter__(self):
         self.start()
+
         return self
 
 

@@ -22,5 +22,4 @@ class APIBase:
 
 		r.raise_for_status()
 
-		if r.status_code == requests.codes.ok:
-			return r
+		return r

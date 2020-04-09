@@ -1,7 +1,7 @@
 import dataclasses
 import ast
 
-from manganelo.api import APIBase
+from .api_base import APIBase
 
 
 @dataclasses.dataclass
