@@ -1,7 +1,9 @@
 import string
+import threading
 
-from dataclasses import dataclass
+from typing import Generator
 from bs4 import BeautifulSoup
+from dataclasses import dataclass
 
 from manganelo import utils
 
@@ -13,54 +15,39 @@ class MangaSearchResult:
 
 
 class SearchManga:
-	def __init__(self, query: str) -> None:
+	def __init__(self, query: str, *, threaded: bool = False) -> None:
 		"""
 		:param query: Query string to search for, we strip the 'illegal' characters ourselves.
 		"""
-
 		self.query: str = query
-		self.results: list = []
 
-	def __str__(self):
-		""" Return the query string which was passed in at construction. """
-		return self.query
+		self._response = None
 
-	def __enter__(self):
-		""" Context manager entry point. Call .start() before we return the instance. """
-		self.start()
+		if threaded:
+			self._thread = threading.Thread(target=self._start)
 
-		return self
+			self._thread.start()
+		else:
+			self._start()
 
-	def __exit__(self, exc_type, exc_val, exc_tb):
-		""" Context manager exit point """
-
-	def __len__(self) -> int:
-		""" Return the length of the internal results list """
-		return len(self.results)
-
-	def __getitem__(self, item):
-		""" Index the internal list """
-		return self.results[item]
-
-	def __contains__(self, item):
-		""" Check if an item exists in the results """
-		return item in self.results
-
-	def __iter__(self):
-		""" Used in loops. Simply return results.__iter__ """
-		return iter(self.results)
-
-	def start(self):
-		""" This is where the magic happens. Sends the request and extracts the information we want. """
+	def _start(self) -> None:
+		""" Send the server request """
 
 		# Generate the URL, which includes removing 'illegal' characters
 		url = self._generate_url(self.query)
 
 		# Send the request. Can also raise an exception is the request fails.
-		response = utils.send_request(url)
+		self._response = utils.send_request(url)
+
+	def results(self) -> Generator[MangaSearchResult, None, None]:
+		""" Extract the information here """
+
+		# If a thread object exists and it is still active, wait for it to finish.
+		if hasattr(self, "_thread") and self._thread.is_alive():
+			self._thread.join()
 
 		# Entire page soup
-		soup = BeautifulSoup(response.content, "html.parser")
+		soup = BeautifulSoup(self._response.content, "html.parser")
 
 		# List of the search results
 		results = soup.find_all(class_="search-story-item")
@@ -72,11 +59,10 @@ class SearchManga:
 			title = manga.get("title", None)  # Manga title
 			link = manga.get("href", None)  # Link to the manga 'homepage'
 
-			r = MangaSearchResult(title=title, url=link)
+			yield MangaSearchResult(title=title, url=link)
 
-			self.results.append(r)
-
-	def _generate_url(self, query: str) -> str:
+	@staticmethod
+	def _generate_url(query: str) -> str:
 		"""
 		Generate the URL we send the request to, we remove all 'illegal' characters here from the query string.
 

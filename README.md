@@ -2,12 +2,12 @@
 
 #### Package to scrape the website Manganelo (and Mangakakalot)
 
-nixonjoshua98 at gmail dot com
+###### Warning: API usages are still being worked on and may change over time
 
 Installation
 -
 
-**Python 3.7.x**
+**Python 3.7 +**
 ```cmd
 pip install manganelo
 ```
@@ -15,63 +15,29 @@ pip install manganelo
 Usages
 -
 
-**Manga Search**
-
 ```python
-from manganelo import SearchManga
+from manganelo import (MangaInfo, SearchManga, DownloadChapter)
 
-search = SearchManga("Naruto")
+# Perform a search for a Manga
+search = SearchManga("Naruto", threaded=False)
 
-search.start()
+# Turn the generator into a list
+results = list(search.results())
 
-for result in search:
-    print(result.title, result.url)
-```
+# Get the homepage of the first search result
+info = MangaInfo(results[0].url)
 
-**Manga Info**
-
-```python
-from manganelo import MangaInfo
-
-# ...
-
-info = MangaInfo(search[0].url)
-
-for k, v in info.items():
-    print(f"{k}: {v}")
-```
-
-**Download Chapters**
-
-```python
-from manganelo import DownloadChapter
-
-# ...
-
-for chapter in info.get("chapters", []):
+# Iterate through all the chapters
+for chapter in info["chapters"]:
     file = f"./Naruto {chapter.chapter_num}.pdf"
 
+    # Download the chapter
     dl = DownloadChapter(chapter, file)
 
     print(f"Downloaded: {dl.ok}")
 ```
 
-Extra API
+Contact Me
 -
 
-An extra set of functionality can be found in **manganelo.extras** which are currently being developed and tested
-
-```python
-from manganelo import extras
-
-search = extras.SearchMangaThread("Naruto")
-
-search.start()  # Start the search thread
-
-# do stuff here while we search in the background
-
-search.wait()  # Wait for the search to finish if it hasn't already
-
-for r in search:
-    print(r)
-```
+- nixonjoshua98-at-gmail-dot-com
