@@ -3,13 +3,14 @@ import shutil
 import tempfile
 import typing
 
+from bs4 import BeautifulSoup
 from PIL import Image
 from reportlab.pdfgen import canvas
 
-from .api_base import APIBase
+from manganelo import utils
 
 
-class DownloadChapter(APIBase):
+class DownloadChapter:
 	def __init__(self, src_url: str, dst_path: str):
 		super().__init__()
 
@@ -21,7 +22,10 @@ class DownloadChapter(APIBase):
 		self._download_chapter()
 
 	def _download_chapter(self):
-		soup = self._get_soup(self._src_url)
+		response = utils.send_request(self._src_url)
+
+		# Entire page soup
+		soup = BeautifulSoup(response.content, "html.parser")
 
 		if soup is None:
 			raise Exception("Request failed")
@@ -70,7 +74,7 @@ class DownloadChapter(APIBase):
 		image_paths = []
 
 		for i, url in enumerate(image_urls):
-			image = self._send_request(url)
+			image = utils.send_request(url)
 			image_ext = url.split(".")[-1]
 			image_dst_path = os.path.join(save_dir, f"{i}.{image_ext}")
 

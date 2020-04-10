@@ -1,7 +1,9 @@
 import dataclasses
 import ast
 
-from .api_base import APIBase
+from bs4 import BeautifulSoup
+
+from manganelo import utils
 
 
 @dataclasses.dataclass
@@ -10,13 +12,17 @@ class MangaChapter:
 	chapter_num: float
 
 
-class MangaInfo(dict, APIBase):
+class MangaInfo(dict):
 	def __init__(self, url: str):
 		super().__init__()
 
 		self._url = url
 
-		self._page_soup = self._get_soup(url)
+		# Send the request. Can also raise an exception is the request fails.
+		response = utils.send_request(self._url)
+
+		# Entire page soup
+		self._page_soup = BeautifulSoup(response.content, "html.parser")
 
 		self._parse_info()
 

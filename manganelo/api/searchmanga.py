@@ -5,8 +5,6 @@ from bs4 import BeautifulSoup
 
 from manganelo import utils
 
-from manganelo.api.api_base import APIBase
-
 
 @dataclass(frozen=True)
 class MangaSearchResult:
@@ -14,7 +12,7 @@ class MangaSearchResult:
 	url: str
 
 
-class SearchManga(APIBase):
+class SearchManga:
 	def __init__(self, query: str) -> None:
 		"""
 		:param query: Query string to search for, we strip the 'illegal' characters ourselves.
@@ -59,7 +57,7 @@ class SearchManga(APIBase):
 		url = self._generate_url(self.query)
 
 		# Send the request. Can also raise an exception is the request fails.
-		response = self._send_request(url)
+		response = utils.send_request(url)
 
 		# Entire page soup
 		soup = BeautifulSoup(response.content, "html.parser")
@@ -89,4 +87,4 @@ class SearchManga(APIBase):
 
 		query = "".join([char.lower() for char in query.replace(" ", "_") if char in allowed_characters])
 
-		return self._SEARCH_URL + query
+		return "http://manganelo.com/search/" + query

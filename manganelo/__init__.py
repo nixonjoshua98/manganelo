@@ -15,6 +15,4 @@ if __name__ == "__main__":
 
 	x.start()
 
-	x.wait()
-
 	print(x.results)
