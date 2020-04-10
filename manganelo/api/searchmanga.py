@@ -17,7 +17,7 @@ class MangaSearchResult:
 class SearchManga(APIBase):
 	def __init__(self, query: str) -> None:
 		"""
-		:param query: Manga string to search for, we strip the 'illegal' characters ourselves.
+		:param query: Query string to search for, we strip the 'illegal' characters ourselves.
 		"""
 
 		self.query: str = query

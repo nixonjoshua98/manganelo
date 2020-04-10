@@ -16,7 +16,6 @@ def find_or_raise(soup: BeautifulSoup, *, class_: str) -> Union[bs4.element.Tag,
     :return:                    We return the element which is a bs4 Tag, but PyCharm marks it as a bs4 PageElement so
                                 we use a Union and mark it as both types.
     """
-
     element = soup.find(class_=class_)
 
     if element is None:

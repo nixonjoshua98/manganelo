@@ -13,8 +13,7 @@ class SearchMangaThread(SearchManga):
         self._thread.start()
 
     def wait(self):
-        while self._thread.is_alive():
-            pass
+        self._thread.join()
 
     def done(self):
         return not self._thread.is_alive()

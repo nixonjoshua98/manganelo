@@ -11,4 +11,10 @@ __ALL__ = (
 )
 
 if __name__ == "__main__":
-	pass
+	x = extras.SearchMangaThread("Naruto")
+
+	x.start()
+
+	x.wait()
+
+	print(x.results)
