@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     name="manganelo",
     packages=find_packages(),
-    version="1.4.0",
+    version="1.4.1",
     license="MIT",
 
     description="Unofficial API for the Manganelo (and Mangakakalot) website.",
@@ -18,7 +18,7 @@ setup(
 
     url="https://github.com/nixonjoshua98/manganelo",
 
-    download_url="https://github.com/nixonjoshua98/manganelo/archive/v1.4.0.tar.gz",
+    download_url="https://github.com/nixonjoshua98/manganelo/archive/v1.4.1.tar.gz",
   
     keywords=["manga", "manganelo", "scrapper", "web", "mangakakalot", "thread"],
   
