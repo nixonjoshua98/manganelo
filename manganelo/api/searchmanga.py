@@ -39,6 +39,9 @@ class SearchManga:
 		# Send the request. Can also raise an exception is the request fails.
 		self._response = utils.send_request(url)
 
+	def done(self) -> bool:
+		return self._thread.is_alive() if hasattr(self, "_thread") else True
+
 	def results(self) -> Generator[MangaSearchResult, None, None]:
 		""" Extract the information here """
 
