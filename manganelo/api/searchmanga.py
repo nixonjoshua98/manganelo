@@ -72,7 +72,7 @@ class SearchManga:
 
 		# Iterate over the results soup and extract the information we want
 		for i, ele in enumerate(results):
-			manga = utils.find_or_raise(ele, class_="item-img")
+			manga = ele.find(class_="item-img")
 
 			title = manga.get("title", None)  # Manga title
 			link = manga.get("href", None)  # Link to the manga 'homepage'

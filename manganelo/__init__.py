@@ -23,6 +23,6 @@ if __name__ == "__main__":
 	for chapter in manga_page.chapters:
 		file = f"./Naruto {chapter.chapter_num}.pdf"
 
-		dl = DownloadChapter(chapter.url, file)
+		#dl = DownloadChapter(chapter.url, file)
 
-		print(f"Downloaded: {dl.ok}")
+		#print(f"Downloaded: {dl.ok}")
