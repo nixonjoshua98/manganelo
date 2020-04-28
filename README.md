@@ -1,43 +1,64 @@
 # Unofficial Manganelo API
 
-#### Package to scrape the website Manganelo (and Mangakakalot)
-
+##### Package to scrape the Manganelo website. Pull requests are encouraged!
 ###### Warning: API usages are still being worked on and may change over time
 
 Installation
 -
-
 **Python 3.7 +**
 ```cmd
 pip install manganelo
 ```
 
-Usages
+Examples
 -
 
+##### Manga searching
 ```python
-from manganelo import (MangaInfo, SearchManga, DownloadChapter)
+from manganelo import SearchManga
 
-# Perform a search for a Manga
-search = SearchManga("Naruto", threaded=False)
+"""
+Threaded
+    Request is made on a seperate thread and is joined when results() is called, 
+    this means that you can do things while the request is being sent.
 
-# Turn the generator into a list
+Not threaded (Single-threaded):
+    Request is made on the same thread meaning execution will halt while it is sent
+"""
+search = SearchManga("Mythical Realm", threaded=True)
+
+# .results() returns a generator - We create a list from the generator here
 results = list(search.results())
 
-# Get the homepage of the first search result
-info = MangaInfo(results[0].url)
-
-# Iterate through all the chapters
-for chapter in info["chapters"]:
-    file = f"./Naruto {chapter.chapter_num}.pdf"
-
-    # Download the chapter
-    dl = DownloadChapter(chapter, file)
-
-    print(f"Downloaded: {dl.ok}")
+# results = [MangaSearchResult(title=?, url=?), MangaSearchResult(title=?, url=?)]
 ```
 
-Contact Me
--
+##### Indiviual Manga Homepage
+```python
+...
 
-- nixonjoshua98-at-gmail-dot-com
+from manganelo import MangaInfo
+
+best_result = results[0]
+
+manga_info = MangaInfo(best_result.url, threaded=True)
+
+manga_page = manga_info.results()
+```
+
+##### Indiviual Manga Homepage Data
+```python
+Search Query: Mythical Realm
+
+url                           : https://manganelo.com/manga/the_mythical_realm
+title                         : The Mythical Realm
+authors                       : ['Wu Zui', 'Liao Jia Le']
+status                        : Ongoing
+genres                        : ['Action', 'Adventure', 'Comedy', 'Fantasy', 'Manhua', 'Martial arts', 'Shounen']
+alternative_titles            : ['仙侠世界 (Chinese)', 'Xian Xia Shi Jie', 'Thế Giới Tiên Hiệp (Vietnamese - Tiếng Việt - TV)']
+chapters                      : [MangaChapter(url='https://manganelo.com/chapter/the_mythical_realm/chapter_0', title='Chapter 0 : Prologue', chapter_num=0)...]
+last_updated                  : 2020-04-28 23:13:00
+views                         : 38488304
+icon                          : https://avt.mkklcdnv6.com/43/w/1-1583465436.jpg
+description                   : From OSTNT: The Mythical Realm: A world of blood, a world where the strong triumph ov...
+```

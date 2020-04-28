@@ -5,8 +5,6 @@ from typing import Union
 
 from bs4 import BeautifulSoup
 
-from manganelo.errors import TagNotFound
-
 
 def find_or_raise(soup: BeautifulSoup, *, class_: str) -> Union[bs4.element.Tag, bs4.element.PageElement]:
     """
@@ -20,7 +18,7 @@ def find_or_raise(soup: BeautifulSoup, *, class_: str) -> Union[bs4.element.Tag,
     element = soup.find(class_=class_)
 
     if element is None:
-        raise TagNotFound(f"Tag not found")
+        raise Exception(f"Tag not found")
 
     return element
 

@@ -1,114 +1,191 @@
 import dataclasses
+import typing
+import threading
 import ast
 
+from datetime import datetime
 from bs4 import BeautifulSoup
 
 from manganelo import utils
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
+class MangaData:
+    url: str
+    title: str
+    authors: list
+    status: str
+    genres: list
+    alternative_titles: list
+    chapters: list
+    last_updated: datetime
+    views: int
+    icon: str
+    description: str
+
+
+@dataclasses.dataclass(frozen=True)
 class MangaChapter:
-	url: str
-	chapter_num: float
+    url: str
+    title: str
+    chapter_num: float
 
 
-class MangaInfo(dict):
-	def __init__(self, url: str):
-		super().__init__()
+class MangaInfo:
+    def __init__(self, url: str, *, threaded: bool = False):
+        """
+        Constrctor for the object. We send the request here.
 
-		self._url = url
+        :param str url: The URL which we will send a request to
+        :param bool threaded: Determines if we want to send the request on the main thread or spawn a new thread.
+        """
 
-		# Send the request. Can also raise an exception is the request fails.
-		response = utils.send_request(self._url)
+        self.url = url
 
-		# Entire page soup
-		self._page_soup = BeautifulSoup(response.content, "html.parser")
+        self._soup = None
 
-		self._parse_info()
+        if threaded:
+            # Create and start a new thread to send the request.
 
-	def __enter__(self):
-		return self
+            self._thread = threading.Thread(target=self._start)
 
-	def __exit__(self, exc_type, exc_val, exc_tb):
-		""" Context manager exit point """
+            self._thread.start()
 
-	def _parse_info(self):
-		# Elements
-		info_panel = self._page_soup.find(class_="panel-story-info")
-		info_right = info_panel.find(class_="story-info-right")
-		info_left = info_panel.find(class_="story-info-left")
-		right_extend = info_panel.find(class_="story-info-right-extent")
-		description = info_panel.find(class_="panel-story-info-description")
-		image = info_left.find(class_="info-image")
-		icon = image.find("img")
+        else:
+            # Single-threaded - We call the start method on the main thread
+            self._start()
 
-		try:
-			last_updated_ele, views_ele, *_ = right_extend.find_all("span", class_="stre-value")
-		except ValueError as e:
-			raise ValueError(f"Some data could not be parsed")
+    def results(self) -> MangaData:
+        """ Performs the soup extraction and returns an object """
 
-		table = self._parse_table()
+        # If a thread object exists and it is still active, wait for it to finish.
+        if hasattr(self, "_thread") and self._thread.is_alive():
+            self._thread.join()
 
-		# Data
-		url = self._url
-		authors = table["author"]
-		status = table["status"]
-		genres = table["genres"]
-		alt_titles = table.get("alternative", [])
-		chapters = self._get_chapter_list()
-		views = int(views_ele.text.replace(",", ""))
-		updated_on = last_updated_ele.text.strip() if last_updated_ele is not None else None
-		title = info_right.find("h1").text.strip() if info_right is not None else None
-		desc = description.text.replace("Description :", "").strip()
-		icon_url = icon.get("src", None)
+        table = self._parse_table()
 
-		self.update({
-			"url": url, "authors": authors, "status": status, "genres": genres, "alt_titles": alt_titles,
-			"chapters": chapters, "views": views, "updated_on": updated_on, "title": title, "desc": desc,
-			"icon_url": icon_url
-			})
+        table.update(self._parse_extended_table())
 
-	def _get_chapter_list(self):
-		panels = self._page_soup.find(class_="panel-story-chapter-list")
+        r = MangaData(
+            url=self.url,
+            title=self._get_title(),
+            status=table.get("status", None),
+            authors=table.get("author", []),
+            genres=table.get("genres", []),
+            alternative_titles=table.get("alternative", []),
+            chapters=self._get_chapter_list(),
+            last_updated=table.get("updated", None),
+            views=table.get("views", 0),
+            icon=self._get_icon(),
+            description=self._get_description()
+        )
 
-		ls = []
+        return r
 
-		for i, ele in enumerate(reversed(panels.find_all(class_="a-h"))):
-			if ele is not None:
-				url = ele.find("a")["href"]
-				chapter_num = ast.literal_eval(url.split("chapter_")[-1])
-				chapter = MangaChapter(url=url, chapter_num=chapter_num)
-				ls.append(chapter)
+    def _start(self) -> None:
+        """ Send the request and create the soup object """
 
-		return ls
+        response = utils.send_request(self.url)
 
-	def _parse_table(self):
-		table_section = self._page_soup.find(class_="variations-tableInfo")
+        self._soup: BeautifulSoup = BeautifulSoup(response.content, "html.parser")
 
-		table_dict = {}
+    def _get_title(self) -> typing.Union[str, None]:
+        """ Return the title present on the page """
 
-		if table_section is None:
-			raise Exception(f"Table could not be found")
+        story_info_right = self._soup.find(class_="story-info-right")
 
-		for row in table_section.find_all("tr"):
-			# Label amd the value elements
-			lbl_ele, val_ele = row.find(class_="table-label"), row.find(class_="table-value")
+        return getattr(story_info_right.find("h1"), "text", None)
 
-			# e.g 'table-genres' to 'genres'
-			key = lbl_ele.find("i").get("class")[0].split("-")[-1]
+    def _get_icon(self) -> str:
+        info_panel = self._soup.find(class_="panel-story-info")
+        info_left = info_panel.find(class_="story-info-left")
+        image = info_left.find(class_="info-image")
 
-			val = None
+        return image.find("img").get("src", None)
 
-			# Potential rows
-			if key == "alternative":
-				val = val_ele.text.strip().split(";")
-			elif key == "author":
-				val = val_ele.text.strip().split(",")
-			elif key == "status":
-				val = val_ele.text.strip()
-			elif key == "genres":
-				val = val_ele.text.strip().split("-")
+    def _get_description(self) -> str:
+        info_panel = self._soup.find(class_="panel-story-info")
+        description = info_panel.find(class_="panel-story-info-description")
 
-			table_dict[key] = val
+        return description.text.replace("Description :", "").strip()
 
-		return table_dict
+    def _get_chapter_list(self) -> typing.List[MangaChapter]:
+        """
+        Extract the chapter list from the website
+
+        :return list: Return a list of chapters which each contain information about the chapter
+        """
+
+        panels = self._soup.find(class_="panel-story-chapter-list")
+
+        ls = []
+
+        for i, ele in enumerate(reversed(panels.find_all(class_="a-h"))):
+            if ele is not None:
+                url = ele.find("a")["href"]
+                text = ele.find("a").text
+
+                # Convert the string to the data type it needs. Eg 11.5 -> float | 10.0 -> int
+                chapter_num = ast.literal_eval(url.split("chapter_")[-1])
+
+                c = MangaChapter(url=url, chapter_num=chapter_num, title=text)
+
+                ls.append(c)
+
+        return ls
+
+    def _parse_table(self) -> dict:
+        """
+        Parse the main table which contains the key information
+
+        return dict: A dict of values taken from the page
+        """
+
+        table_section = self._soup.find(class_="variations-tableInfo")
+
+        data = {}
+
+        for row in table_section.find_all("tr"):
+            label = row.find(class_="table-label")
+            value = row.find(class_="table-value")
+
+            # Eg. info-author -> author
+            key = label.find("i").get("class")[0].split("-")[-1]
+            val = None
+
+            if key == "alternative":
+                val = [ele.strip() for ele in value.text.split(";")]
+
+            elif key == "author":
+                val = [ele.text for ele in value.find_all("a")]
+
+            elif key == "status":
+                val = value.text.strip()
+
+            elif key == "genres":
+                val = [ele.text for ele in value.find_all("a")]
+
+            data[key] = val
+
+        return data
+
+    def _parse_extended_table(self) -> dict:
+        """
+        Extract information from the extended table
+
+        :return dict: Dict containing information taken from the extended table
+        """
+
+        right_extend = self._soup.find(class_="story-info-right-extent")
+
+        rows = [ele.text for ele in right_extend.find_all("span", class_="stre-value") if ele.text.strip()]
+
+        updated, views, *_ = rows
+
+        # Remove AM and PM
+        updated = updated[0:-3]
+
+        updated = datetime.strptime(updated, "%b %d,%Y - %H:%M")
+        views = int(views.replace(",", ""))
+
+        return {"updated": updated, "views": views}
