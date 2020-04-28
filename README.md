@@ -63,3 +63,52 @@ last_updated       | 2020-04-28 23:13:00
 views              | 38488304
 icon               | https://avt.mkklcdnv6.com/43/w/1-1583465436.jpg
 description        | From OSTNT: The Mythical Realm: A world of blood, a world where the strong triumph ov...
+
+##### Chapter Download
+```python
+...
+
+from manganelo import DownloadChapter
+
+for chapter in manga_page.chapters:
+    file = f"./Naruto {chapter.chapter_num}.pdf"
+
+    dl = DownloadChapter(chapter.url, file)
+
+    print(f"Downloaded: {dl.ok}")
+```
+
+##### Complete Usage
+```python
+from manganelo import (MangaInfo, SearchManga, DownloadChapter)
+
+search = SearchManga("Naruto", threaded=False)
+
+results = list(search.results())
+
+best_result = results[0]
+
+manga_info = MangaInfo(best_result.url, threaded=False)
+
+manga_page = manga_info.results()
+
+for chapter in manga_page.chapters:
+    file = f"./Naruto {chapter.chapter_num}.pdf"
+
+    dl = DownloadChapter(chapter.url, file)
+
+    print(f"Downloaded: {dl.ok}")
+```
+
+Warnings
+-
+- DownloadChapter object will undergo a rework which may change the overall usage
+- Attributes may be renamed. For example **.chapter_num** to **.num**
+- Custom exceptions have not been added
+- Manganelo may change their website URL or HTML at any time, I will try to keep up-to-date 
+    but may not be able to respond to changes instantly
+- **Pull requests are welcomed!**
+
+Contact Me
+-
+I am happy to respond to emails at **joshuanixonofficial@gmail.com**
