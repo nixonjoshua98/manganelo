@@ -9,12 +9,12 @@ setup(
     version="1.4.3",
     license="MIT",
 
-    description="Unofficial API for the Manganelo (and Mangakakalot) website.",
+    description="Unofficial API for the Manganelo website.",
     long_description=long_description,
     long_description_content_type="text/markdown",
 
     author="Joshua Nixon",
-    author_email="nixonjoshua98@gmail.com",
+    author_email="joshuanixonofficial@gmail.com",
 
     url="https://github.com/nixonjoshua98/manganelo",
 
