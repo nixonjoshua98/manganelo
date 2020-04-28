@@ -46,19 +46,20 @@ manga_info = MangaInfo(best_result.url, threaded=True)
 manga_page = manga_info.results()
 ```
 
-##### Indiviual Manga Homepage Data
-```python
-Search Query: Mythical Realm
+##### Indiviual Manga Homepage Data (manga_page)
 
-url                           : https://manganelo.com/manga/the_mythical_realm
-title                         : The Mythical Realm
-authors                       : ['Wu Zui', 'Liao Jia Le']
-status                        : Ongoing
-genres                        : ['Action', 'Adventure', 'Comedy', 'Fantasy', 'Manhua', 'Martial arts', 'Shounen']
-alternative_titles            : ['仙侠世界 (Chinese)', 'Xian Xia Shi Jie', 'Thế Giới Tiên Hiệp (Vietnamese - Tiếng Việt - TV)']
-chapters                      : [MangaChapter(url='https://manganelo.com/chapter/the_mythical_realm/chapter_0', title='Chapter 0 : Prologue', chapter_num=0)...]
-last_updated                  : 2020-04-28 23:13:00
-views                         : 38488304
-icon                          : https://avt.mkklcdnv6.com/43/w/1-1583465436.jpg
-description                   : From OSTNT: The Mythical Realm: A world of blood, a world where the strong triumph ov...
-```
+*Search Query: Mythical Realm*
+
+Attribute | Value (Shortened)
+--- | ---
+url                | https://manganelo.com/manga/the_mythical_realm
+title              | The Mythical Realm
+authors            | ['Wu Zui', 'Liao Jia Le']
+status             | Ongoing
+genres             | ['Action', 'Adventure', 'Comedy', 'Fantasy', 'Manhua', 'Martial arts', 'Shounen']
+alternative_titles | ['仙侠世界 (Chinese)', 'Xian Xia Shi Jie', 'Thế Giới Tiên Hiệp (Vietnamese - Tiếng Việt - TV)']
+chapters           | [MangaChapter(url='https://manganelo.com/chapter/the_mythical_realm/chapter_0', title='Chapter 0 : Prologue', chapter_num=0)...]
+last_updated       | 2020-04-28 23:13:00
+views              | 38488304
+icon               | https://avt.mkklcdnv6.com/43/w/1-1583465436.jpg
+description        | From OSTNT: The Mythical Realm: A world of blood, a world where the strong triumph ov...
