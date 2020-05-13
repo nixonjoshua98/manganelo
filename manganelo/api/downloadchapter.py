@@ -171,11 +171,8 @@ class DownloadChapter:
 			num_pages += 1
 
 		if num_pages > 0:
-			dirs = os.path.dirname(self._dst_path)
-
 			# Create the path if it doesn't exist already
-			if dirs:
-				os.makedirs(dirs, exist_ok=True)
+			os.makedirs(os.path.dirname(self._dst_path), exist_ok=True)
 
 			try:
 				pdf.save()

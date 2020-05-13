@@ -58,7 +58,7 @@ authors            | ['Wu Zui', 'Liao Jia Le']
 status             | Ongoing
 genres             | ['Action', 'Adventure', 'Comedy', 'Fantasy', 'Manhua', 'Martial arts', 'Shounen']
 alternative_titles | ['仙侠世界 (Chinese)', 'Xian Xia Shi Jie', 'Thế Giới Tiên Hiệp (Vietnamese - Tiếng Việt - TV)']
-chapters           | [MangaChapter(url='https://manganelo.com/chapter/the_mythical_realm/chapter_0', title='Chapter 0 : Prologue', num=0)...]
+chapters           | [MangaChapter(url='https://manganelo.com/chapter/the_mythical_realm/chapter_0', title='Chapter 0 : Prologue', chapter_num=0)...]
 last_updated       | 2020-04-28 23:13:00
 views              | 38488304
 icon               | https://avt.mkklcdnv6.com/43/w/1-1583465436.jpg
@@ -74,10 +74,8 @@ for chapter in manga_page.chapters:
     file = f"./Naruto {chapter.num}.pdf"
 
     dl = DownloadChapter(chapter.url, file)
-    
-    results = dl.results()
-    
-    print(f"Downloaded: {results.saved}")
+
+    print(f"Downloaded: {dl.ok}")
 ```
 
 ##### Complete Usage
@@ -99,10 +97,17 @@ for chapter in manga_page.chapters:
 
     dl = DownloadChapter(chapter.url, file)
 
-    results = dl.results()
-    
-    print(f"Downloaded: {results.saved}")
+    print(f"Downloaded: {dl.ok}")
 ```
+
+Warnings
+-
+- DownloadChapter object will undergo a rework which may change the overall usage
+- Attributes may be renamed. For example **.chapter_num** to **.num**
+- Custom exceptions have not been added
+- Manganelo may change their website URL or HTML at any time, I will try to keep up-to-date 
+    but may not be able to respond to changes instantly
+- **Pull requests are welcomed!**
 
 Contact Me
 -
