@@ -16,6 +16,8 @@ class MangaSearchResult:
 
 class SearchManga:
 	def __init__(self, query: str, *, threaded: bool = False) -> None:
+		super(SearchManga, self).__init__()
+
 		"""
 		Constrctor for the object. We send the request here.
 
@@ -49,11 +51,7 @@ class SearchManga:
 		# Generate the URL, which includes removing 'illegal' characters
 		self.url = self._generate_url(self._query)
 
-		"""
-		Send the request. Can also raise an exception if the request fails.
-		We keep the errors suppressed here and will throw them
-		"""
-		self._response = utils.send_request(self.url, suppress_errors=True)
+		self._response = utils.send_request(self.url)
 
 	def results(self) -> typing.Generator[MangaSearchResult, None, None]:
 		"""
