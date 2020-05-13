@@ -1,14 +1,14 @@
 import string
 import threading
 import typing
+import dataclasses
 
 from bs4 import BeautifulSoup
-from dataclasses import dataclass
 
 from manganelo import utils
 
 
-@dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True)
 class MangaSearchResult:
 	title: str
 	url: str
@@ -49,13 +49,16 @@ class SearchManga:
 		# Generate the URL, which includes removing 'illegal' characters
 		self.url = self._generate_url(self._query)
 
-		# Send the request. Can also raise an exception if the request fails.
-		self._response = utils.send_request(self.url)
+		"""
+		Send the request. Can also raise an exception if the request fails.
+		We keep the errors suppressed here and will throw them
+		"""
+		self._response = utils.send_request(self.url, suppress_errors=True)
 
 	def results(self) -> typing.Generator[MangaSearchResult, None, None]:
 		"""
 		Extract the results from the request we sent earlier.
-		[Threaded] We join the thread, which means that we wait for the request to be finished.
+		[Threaded] We join the thread, which means that we wait for the request to finish.
 
 		:return Generator: Return a generator of the results
 		"""

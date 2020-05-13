@@ -71,7 +71,7 @@ description        | From OSTNT: The Mythical Realm: A world of blood, a world w
 from manganelo import DownloadChapter
 
 for chapter in manga_page.chapters:
-    file = f"./Naruto {chapter.chapter_num}.pdf"
+    file = f"./Naruto {chapter.num}.pdf"
 
     dl = DownloadChapter(chapter.url, file)
 
@@ -93,7 +93,7 @@ manga_info = MangaInfo(best_result.url, threaded=False)
 manga_page = manga_info.results()
 
 for chapter in manga_page.chapters:
-    file = f"./Naruto {chapter.chapter_num}.pdf"
+    file = f"./Naruto {chapter.num}.pdf"
 
     dl = DownloadChapter(chapter.url, file)
 

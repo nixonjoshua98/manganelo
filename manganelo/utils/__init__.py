@@ -1,20 +1,17 @@
 import requests
 
 
-def send_request(url: str, *, timeout: int = 5) -> requests.Response:
+def send_request(url: str) -> requests.Response:
     """
     Send a request to the URL provided
 
     :param str url: The URL which we are sending a GET request to.
-    :param timeout: Optional parameter which decides how long we wait before throwing an exception
     :raise: Will raise exceptions from the requests module
-    :return: The response object
+    :return: The response object or None
     """
 
-    default_headers = requests.utils.default_headers()
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0'}
 
-    r = requests.get(url, stream=True, timeout=timeout, headers=default_headers)
-
-    r.raise_for_status()
+    r = requests.get(url, stream=True, timeout=5, headers=headers)
 
     return r

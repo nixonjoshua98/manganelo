@@ -28,7 +28,7 @@ class MangaData:
 class MangaChapter:
     url: str
     title: str
-    chapter_num: float
+    num: float
 
 
 class MangaInfo:

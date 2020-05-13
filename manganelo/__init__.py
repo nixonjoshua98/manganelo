@@ -8,8 +8,6 @@ __ALL__ = (
 )
 
 if __name__ == "__main__":
-	from manganelo import (MangaInfo, SearchManga, DownloadChapter)
-
 	search = SearchManga("Naruto", threaded=True)
 
 	results = list(search.results())
@@ -21,7 +19,7 @@ if __name__ == "__main__":
 	manga_page = manga_info.results()
 
 	for chapter in manga_page.chapters:
-		file = f"./Naruto {chapter.chapter_num}.pdf"
+		file = f"./Naruto {chapter.num}.pdf"
 
 		#dl = DownloadChapter(chapter.url, file)
 

@@ -2,53 +2,152 @@ import os
 import shutil
 import tempfile
 import typing
+import threading
+import dataclasses
 
+from reportlab.pdfgen import canvas
 from bs4 import BeautifulSoup
 from PIL import Image
-from reportlab.pdfgen import canvas
 
 from manganelo import utils
 
 
-class DownloadChapter:
-	def __init__(self, src_url: str, dst_path: str):
-		super().__init__()
+@dataclasses.dataclass
+class ChapterStatus:
+	saved: bool
+	percent_saved: float
+	path: str
 
-		self.ok = False
+
+class DownloadChapter:
+	def __init__(self, src_url: str, dst_path: str, *, threaded: bool = False):
+		"""
+		Object constructor
+
+		:param src_url: The  chapter which we will be downloading
+		:param dst_path: The path where the chapter will be saved after completion
+		:param threaded: Whether the bulk of the work will be done on a seperate thread or the main thread
+		"""
 
 		self._src_url = src_url
 		self._dst_path = dst_path
 
-		self._download_chapter()
+		self._saved = False
+		self._percent_saved = 0
 
-	def _download_chapter(self):
-		response = utils.send_request(self._src_url)
+		if threaded:
+			# Create a new thread for the main section of the download
 
-		# Entire page soup
-		soup = BeautifulSoup(response.content, "html.parser")
+			self._thread = threading.Thread(target=self._start)
 
-		if soup is None:
-			raise Exception("Request failed")
+			self._thread.start()
+
+		else:
+			# Single-threaded - We call the start method on the main thread
+
+			self._start()
+
+	def results(self):
+		"""
+		Returns the status of the download.
+
+		:return ChapterStatus: The status of the chapter
+		"""
+
+		# We wait for the work thread if one is present and still alive
+		if hasattr(self, "_thread") and self._thread.is_alive():
+			self._thread.join()
+
+		return ChapterStatus(self._saved, self._percent_saved, self._dst_path)
+
+	def _start(self):
+		""" The main function...Where the magic happens. """
+
+		r = utils.send_request(self._src_url)
+
+		soup = BeautifulSoup(r.content, "html.parser")
 
 		image_urls = self._get_image_urls(soup)
 
 		with tempfile.TemporaryDirectory() as temp_dir:
 			image_paths = self._download_images(image_urls, temp_dir)
 
-			self._create_pdf(image_paths)
+			num_pages = self._create_pdf(image_paths)
+
+			self._percent_saved = num_pages / len(image_urls)
 
 	@staticmethod
-	def _get_image_urls(soup) -> typing.List[str]:
+	def _get_image_urls(soup: BeautifulSoup) -> typing.List[str]:
+		"""
+		Return all the image URLS inside the soup object.
+
+		:param soup: The soup which we will be looking through
+		:return: We return a list of image URLS
+		"""
+
+		def valid(url: str):
+			return url.endswith((".png", ".jpg"))
+
 		image_soup = soup.find_all("img")
 
-		image_urls = [ele["src"] for ele in image_soup]
+		images = [url for url in map(lambda ele: ele["src"], image_soup) if valid(url)]
 
-		return image_urls
+		return images
 
-	def _create_pdf(self, images: typing.List[str]):
+	@staticmethod
+	def _download_images(image_urls: typing.List[str], save_dir: str) -> typing.List[str]:
+		"""
+		Download images from a sequence of URLS into a directory.
+
+		:param image_urls: List of URLS which we will attempt to download here
+		:param save_dir: The directory where the downloaded images will be saved
+		:return list: List of paths where the downloaded images are stored
+		"""
+
+		image_paths = []
+
+		for i, url in enumerate(image_urls):
+			image = utils.send_request(url)
+
+			image_ext = url.split(".")[-1]
+
+			image_dst_path = os.path.join(save_dir, f"{i}.{image_ext}")
+
+			if image is not None:
+				with open(image_dst_path, "wb") as fh:
+
+					# Magic boolean which makes it work
+					image.raw.decode_content = True
+
+					# noinspection PyBroadException
+
+					# Attempt to download the image from the URL
+					try:
+						shutil.copyfileobj(image.raw, fh)
+
+					# We should reduce the scope
+					except Exception:
+						pass
+
+					# We downloaded the image without any errors
+					else:
+						image_paths.append(image_dst_path)
+
+		return image_paths
+
+	def _create_pdf(self, images: typing.List[str]) -> int:
+		"""
+
+		:param images: List of image paths which we will attempt to convert into a PDF
+		:return int: The number of pages in the PDF
+		"""
+
 		pdf = canvas.Canvas(self._dst_path)
 
+		num_pages = 0
+
 		for image in images:
+
 			try:
 				with Image.open(image) as img:
 					w, h = img.size
@@ -56,39 +155,31 @@ class DownloadChapter:
 			except (OSError, UnboundLocalError):
 				continue
 
+			# Set the page dimensions to the image dimensions
 			pdf.setPageSize((w, h))
 
 			try:
+				# Insert the image onto the current page
 				pdf.drawImage(image, x=0, y=0)
 
-			except OSError as e:
+			except OSError:
 				continue
 
+			# Create a new page ready for the next image
 			pdf.showPage()
 
-		pdf.save()
+			num_pages += 1
 
-		self.ok = True
+		if num_pages > 0:
+			# Create the path if it doesn't exist already
+			os.makedirs(os.path.dirname(self._dst_path), exist_ok=True)
 
-	def _download_images(self, image_urls: typing.List[str], save_dir: str) -> typing.List[str]:
-		image_paths = []
+			try:
+				pdf.save()
+			except FileNotFoundError:
+				pass
 
-		for i, url in enumerate(image_urls):
-			image = utils.send_request(url)
-			image_ext = url.split(".")[-1]
-			image_dst_path = os.path.join(save_dir, f"{i}.{image_ext}")
+			else:
+				self._saved = True
 
-			if image is not None:
-				# Download the image URL
-				with open(image_dst_path, "wb") as fh:
-					image.raw.decode_content = True
-
-					try:
-						shutil.copyfileobj(image.raw, fh)
-					except:  # Catch everything and call it a day
-						pass
-					else:
-						image_paths.append(image_dst_path)
-
-		return image_paths
-
+		return num_pages
