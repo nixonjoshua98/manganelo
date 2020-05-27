@@ -71,13 +71,14 @@ description        | From OSTNT: The Mythical Realm: A world of blood, a world w
 from manganelo import DownloadChapter
 
 for chapter in manga_page.chapters:
-    file = f"./Naruto {chapter.num}.pdf"
+	file = f"./Naruto {chapter.num}.pdf"
 
-    dl = DownloadChapter(chapter.url, file)
-    
-    results = dl.results()
-    
-    print(f"Downloaded: {results.saved}")
+	dl = DownloadChapter(chapter.url, file)
+
+	results = dl.results()
+
+	if results.saved_ok:
+		print(results.path)
 ```
 
 ##### Complete Usage
@@ -95,13 +96,14 @@ manga_info = MangaInfo(best_result.url, threaded=False)
 manga_page = manga_info.results()
 
 for chapter in manga_page.chapters:
-    file = f"./Naruto {chapter.num}.pdf"
+	file = f"./Naruto {chapter.num}.pdf"
 
-    dl = DownloadChapter(chapter.url, file)
+	dl = DownloadChapter(chapter.url, file)
 
-    results = dl.results()
-    
-    print(f"Downloaded: {results.saved}")
+	results = dl.results()
+
+	if results.saved_ok:
+		print(results.path)
 ```
 
 Contact Me

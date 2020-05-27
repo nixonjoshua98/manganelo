@@ -1,11 +1,10 @@
 import string
-import threading
 import typing
 import dataclasses
 
 from bs4 import BeautifulSoup
 
-from manganelo import utils
+from manganelo.api.apibase import APIBase
 
 
 @dataclasses.dataclass(frozen=True)
@@ -14,10 +13,8 @@ class MangaSearchResult:
 	url: str
 
 
-class SearchManga:
+class SearchManga(APIBase):
 	def __init__(self, query: str, *, threaded: bool = False) -> None:
-		super(SearchManga, self).__init__()
-
 		"""
 		Constrctor for the object. We send the request here.
 
@@ -30,16 +27,7 @@ class SearchManga:
 		self._query = query
 		self._response = None
 
-		if threaded:
-			# Create and start a new thread to send the request.
-
-			self._thread = threading.Thread(target=self._start)
-
-			self._thread.start()
-
-		else:
-			# Single-threaded - We call the start method on the main thread
-			self._start()
+		super(SearchManga, self).__init__(threaded)
 
 	def _start(self) -> None:
 		"""
@@ -51,7 +39,7 @@ class SearchManga:
 		# Generate the URL, which includes removing 'illegal' characters
 		self.url = self._generate_url(self._query)
 
-		self._response = utils.send_request(self.url)
+		self._response = self.send_request(self.url)
 
 	def results(self) -> typing.Generator[MangaSearchResult, None, None]:
 		"""
@@ -61,9 +49,7 @@ class SearchManga:
 		:return Generator: Return a generator of the results
 		"""
 
-		# If a thread object exists and it is still active, wait for it to finish.
-		if hasattr(self, "_thread") and self._thread.is_alive():
-			self._thread.join()
+		super(SearchManga, self).results()
 
 		# Entire page soup
 		soup = BeautifulSoup(self._response.content, "html.parser")

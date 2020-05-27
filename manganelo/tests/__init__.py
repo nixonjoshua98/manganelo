@@ -19,7 +19,7 @@ class Testing(unittest.TestCase):
 
         results = obj.results()
 
-        self.assertEqual(results.saved, True)
+        self.assertEqual(results.saved_ok, True)
 
 
 if __name__ == "__main__":
