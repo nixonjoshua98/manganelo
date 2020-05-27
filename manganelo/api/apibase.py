@@ -15,8 +15,8 @@ class APIBase:
 			# Single-threaded - We call the start method on the main thread
 			self._start()
 
-	def results(self):
-		""" Handles the extra thread """
+	def _join_thread(self):
+		""" Handles the extra thread by joining it onto the main thread. """
 
 		# If a thread object exists and it is still active, wait for it to finish.
 		if hasattr(self, "_thread") and self._thread.is_alive():

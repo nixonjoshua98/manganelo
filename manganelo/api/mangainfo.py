@@ -55,7 +55,7 @@ class MangaInfo(APIBase):
     def results(self) -> MangaData:
         """ Performs the soup extraction and returns an object """
 
-        super(MangaInfo, self).results()
+        self._join_thread()
 
         table = self._parse_table()
 

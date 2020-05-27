@@ -43,7 +43,7 @@ class DownloadChapter(APIBase):
 		:return ChapterStatus: The status of the chapter
 		"""
 
-		super(DownloadChapter, self).results()
+		self._join_thread()
 
 		return ChapterStatus(self._saved, self._percent_saved, self._dst_path)
 

@@ -49,7 +49,7 @@ class SearchManga(APIBase):
 		:return Generator: Return a generator of the results
 		"""
 
-		super(SearchManga, self).results()
+		self._join_thread()
 
 		# Entire page soup
 		soup = BeautifulSoup(self._response.content, "html.parser")
