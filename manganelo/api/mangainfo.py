@@ -1,12 +1,11 @@
 import dataclasses
 import typing
-import threading
 import ast
 
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-from manganelo import utils
+from manganelo.api.apibase import APIBase
 
 
 @dataclasses.dataclass(frozen=True)
@@ -31,7 +30,7 @@ class MangaChapter:
     num: float
 
 
-class MangaInfo:
+class MangaInfo(APIBase):
     def __init__(self, url: str, *, threaded: bool = False):
         """
         Constrctor for the object. We send the request here.
@@ -44,23 +43,19 @@ class MangaInfo:
 
         self._soup = None
 
-        if threaded:
-            # Create and start a new thread to send the request.
+        super(MangaInfo, self).__init__(threaded)
 
-            self._thread = threading.Thread(target=self._start)
+    def _start(self) -> None:
+        """ Send the request and create the soup object """
 
-            self._thread.start()
+        response = self.send_request(self.url)
 
-        else:
-            # Single-threaded - We call the start method on the main thread
-            self._start()
+        self._soup: BeautifulSoup = BeautifulSoup(response.content, "html.parser")
 
     def results(self) -> MangaData:
         """ Performs the soup extraction and returns an object """
 
-        # If a thread object exists and it is still active, wait for it to finish.
-        if hasattr(self, "_thread") and self._thread.is_alive():
-            self._thread.join()
+        super(MangaInfo, self).results()
 
         table = self._parse_table()
 
@@ -81,13 +76,6 @@ class MangaInfo:
         )
 
         return r
-
-    def _start(self) -> None:
-        """ Send the request and create the soup object """
-
-        response = utils.send_request(self.url)
-
-        self._soup: BeautifulSoup = BeautifulSoup(response.content, "html.parser")
 
     def _get_title(self) -> typing.Union[str, None]:
         """ Return the title present on the page """
@@ -126,9 +114,9 @@ class MangaInfo:
                 text = ele.find("a").text
 
                 # Convert the string to the data type it needs. Eg 11.5 -> float | 10.0 -> int
-                chapter_num = ast.literal_eval(url.split("chapter_")[-1])
+                num = ast.literal_eval(url.split("chapter_")[-1])
 
-                c = MangaChapter(url=url, chapter_num=chapter_num, title=text)
+                c = MangaChapter(url=url, num=num, title=text)
 
                 ls.append(c)
 

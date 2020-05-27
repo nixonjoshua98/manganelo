@@ -2,24 +2,23 @@ import os
 import shutil
 import tempfile
 import typing
-import threading
 import dataclasses
 
 from reportlab.pdfgen import canvas
 from bs4 import BeautifulSoup
 from PIL import Image
 
-from manganelo import utils
+from manganelo.api.apibase import APIBase
 
 
 @dataclasses.dataclass
 class ChapterStatus:
-	saved: bool
+	saved_ok: bool
 	percent_saved: float
 	path: str
 
 
-class DownloadChapter:
+class DownloadChapter(APIBase):
 	def __init__(self, src_url: str, dst_path: str, *, threaded: bool = False):
 		"""
 		Object constructor
@@ -35,17 +34,7 @@ class DownloadChapter:
 		self._saved = False
 		self._percent_saved = 0
 
-		if threaded:
-			# Create a new thread for the main section of the download
-
-			self._thread = threading.Thread(target=self._start)
-
-			self._thread.start()
-
-		else:
-			# Single-threaded - We call the start method on the main thread
-
-			self._start()
+		super(DownloadChapter, self).__init__(threaded)
 
 	def results(self):
 		"""
@@ -54,16 +43,14 @@ class DownloadChapter:
 		:return ChapterStatus: The status of the chapter
 		"""
 
-		# We wait for the work thread if one is present and still alive
-		if hasattr(self, "_thread") and self._thread.is_alive():
-			self._thread.join()
+		super(DownloadChapter, self).results()
 
 		return ChapterStatus(self._saved, self._percent_saved, self._dst_path)
 
 	def _start(self):
 		""" The main function...Where the magic happens. """
 
-		r = utils.send_request(self._src_url)
+		r = self.send_request(self._src_url)
 
 		soup = BeautifulSoup(r.content, "html.parser")
 
@@ -94,8 +81,7 @@ class DownloadChapter:
 
 		return images
 
-	@staticmethod
-	def _download_images(image_urls: typing.List[str], save_dir: str) -> typing.List[str]:
+	def _download_images(self, image_urls: typing.List[str], save_dir: str) -> typing.List[str]:
 		"""
 		Download images from a sequence of URLS into a directory.
 
@@ -107,7 +93,7 @@ class DownloadChapter:
 		image_paths = []
 
 		for i, url in enumerate(image_urls):
-			image = utils.send_request(url)
+			image = self.send_request(url)
 
 			image_ext = url.split(".")[-1]
 
@@ -171,8 +157,11 @@ class DownloadChapter:
 			num_pages += 1
 
 		if num_pages > 0:
+			dirs = os.path.dirname(self._dst_path)
+
 			# Create the path if it doesn't exist already
-			os.makedirs(os.path.dirname(self._dst_path), exist_ok=True)
+			if dirs:
+				os.makedirs(dirs, exist_ok=True)
 
 			try:
 				pdf.save()
