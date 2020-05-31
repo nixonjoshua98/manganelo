@@ -9,7 +9,9 @@ __ALL__ = (
 
 
 if __name__ == "__main__":
-	search = SearchManga("Naruto", threaded=False)
+	import os
+
+	search = SearchManga("Raid", threaded=False)
 
 	results = list(search.results())
 
@@ -20,11 +22,13 @@ if __name__ == "__main__":
 	manga_page = manga_info.results()
 
 	for chapter in manga_page.chapters:
-		file = f"./Naruto {chapter.num}.pdf"
+		file = f"./Raid {chapter.num}.pdf"
 
 		dl = DownloadChapter(chapter.url, file)
 
 		results = dl.results()
 
 		if results.saved_ok:
-			print(results.path)
+			print(results.path, results.percent_saved)
+
+			os.remove(results.path)

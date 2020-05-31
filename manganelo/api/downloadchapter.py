@@ -95,6 +95,8 @@ class DownloadChapter(APIBase):
 		for i, url in enumerate(image_urls):
 			image = self.send_request(url)
 
+			print(image)
+
 			image_ext = url.split(".")[-1]
 
 			image_dst_path = os.path.join(save_dir, f"{i}.{image_ext}")
