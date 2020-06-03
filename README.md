@@ -82,6 +82,8 @@ for chapter in manga_page.chapters:
 
 ##### Chapter Information
 ```python
+...
+
 from manganelo import ChapterInfo
 
 # Example: https://manganelo.com/chapter/up919279/chapter_1.1
