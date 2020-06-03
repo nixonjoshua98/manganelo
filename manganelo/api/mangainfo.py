@@ -31,15 +31,15 @@ class MangaChapter:
 
 
 class MangaInfo(APIBase):
-    def __init__(self, url: str, *, threaded: bool = False):
+    def __init__(self, src_url: str, *, threaded: bool = False):
         """
         Constrctor for the object. We send the request here.
 
-        :param str url: The URL which we will send a request to
+        :param str src_url: The URL which we will send a request to
         :param bool threaded: Determines if we want to send the request on the main thread or spawn a new thread.
         """
 
-        self.url = url
+        self._src_url = src_url
 
         self._soup = None
 
@@ -48,7 +48,7 @@ class MangaInfo(APIBase):
     def _start(self) -> None:
         """ Send the request and create the soup object """
 
-        response = self.send_request(self.url)
+        response = self.send_request(self._src_url)
 
         self._soup: BeautifulSoup = BeautifulSoup(response.content, "html.parser")
 
@@ -62,7 +62,7 @@ class MangaInfo(APIBase):
         table.update(self._parse_extended_table())
 
         r = MangaData(
-            url=self.url,
+            url=self._src_url,
             title=self._get_title(),
             status=table.get("status", None),
             authors=table.get("author", []),

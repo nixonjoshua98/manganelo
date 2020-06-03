@@ -80,6 +80,18 @@ for chapter in manga_page.chapters:
 		print(results.path)
 ```
 
+##### Chapter Information
+```python
+from manganelo import ChapterInfo
+
+# Example: https://manganelo.com/chapter/up919279/chapter_1.1
+info = ChapterInfo(chapter.url)
+
+results = info.results()
+
+print(results.title, results.url, results.image_urls)
+```
+
 ##### Complete Usage
 ```python
 search = SearchManga("Raid", threaded=False)
@@ -88,14 +100,14 @@ results = list(search.results())
 
 best_result = results[0]
 
-manga_info = MangaInfo(best_result.url, threaded=False)
+manga_info = MangaInfo(best_result._src_url, threaded=False)
 
 manga_page = manga_info.results()
 
 for chapter in manga_page.chapters:
 	file = f"./Raid {chapter.num}.pdf"
 
-	dl = DownloadChapter(chapter.url, file)
+	dl = DownloadChapter(chapter._src_url, file)
 
 	results = dl.results()
 

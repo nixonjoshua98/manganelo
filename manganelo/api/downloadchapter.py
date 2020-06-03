@@ -9,10 +9,12 @@ from bs4 import BeautifulSoup
 from PIL import Image
 
 from manganelo.api.apibase import APIBase
+from manganelo.api.chapterinfo import ChapterInfo
 
 
 @dataclasses.dataclass
 class ChapterStatus:
+	title: str
 	saved_ok: bool
 	percent_saved: float
 	path: str
@@ -30,6 +32,7 @@ class DownloadChapter(APIBase):
 
 		self._src_url = src_url
 		self._dst_path = dst_path
+		self._title = None
 
 		self._saved = False
 		self._percent_saved = 0
@@ -45,7 +48,12 @@ class DownloadChapter(APIBase):
 
 		self._join_thread()
 
-		return ChapterStatus(self._saved, self._percent_saved, self._dst_path)
+		return ChapterStatus(
+			saved_ok=self._saved,
+			percent_saved=self._percent_saved,
+			path=self._dst_path,
+			title=self._title
+		)
 
 	def _start(self):
 		""" The main function...Where the magic happens. """
@@ -54,32 +62,16 @@ class DownloadChapter(APIBase):
 
 		soup = BeautifulSoup(r.content, "html.parser")
 
-		image_urls = self._get_image_urls(soup)
+		chap = ChapterInfo.from_soup(soup)
+
+		self._title = chap.title
 
 		with tempfile.TemporaryDirectory() as temp_dir:
-			image_paths = self._download_images(image_urls, temp_dir)
+			image_paths = self._download_images(chap.image_urls, temp_dir)
 
 			num_pages = self._create_pdf(image_paths)
 
-			self._percent_saved = num_pages / len(image_urls)
-
-	@staticmethod
-	def _get_image_urls(soup: BeautifulSoup) -> typing.List[str]:
-		"""
-		Return all the image URLS inside the soup object.
-
-		:param soup: The soup which we will be looking through
-		:return: We return a list of image URLS
-		"""
-
-		def valid(url: str):
-			return url.endswith((".png", ".jpg"))
-
-		image_soup = soup.find_all("img")
-
-		images = [url for url in map(lambda ele: ele["src"], image_soup) if valid(url)]
-
-		return images
+			self._percent_saved = num_pages / len(chap.image_urls)
 
 	def _download_images(self, image_urls: typing.List[str], save_dir: str) -> typing.List[str]:
 		"""
@@ -94,8 +86,6 @@ class DownloadChapter(APIBase):
 
 		for i, url in enumerate(image_urls):
 			image = self.send_request(url)
-
-			print(image)
 
 			image_ext = url.split(".")[-1]
 
@@ -135,7 +125,6 @@ class DownloadChapter(APIBase):
 		num_pages = 0
 
 		for image in images:
-
 			try:
 				with Image.open(image) as img:
 					w, h = img.size
