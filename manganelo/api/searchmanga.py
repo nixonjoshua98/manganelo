@@ -78,4 +78,4 @@ class SearchManga(APIBase):
 
 		query = "".join([char.lower() for char in query.replace(" ", "_") if char in allowed_characters])
 
-		return "http://manganelo.com/search/" + query
+		return "http://manganelo.com/search/story/" + query
