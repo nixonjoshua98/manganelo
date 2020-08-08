@@ -1,6 +1,6 @@
 # Unofficial Manganelo API
 
-###### Package to scrape the Manganelo website. Pull requests are encouraged!
+###### Package to scrape the Manganelo website. Want to contribute? Pull requests are encouraged!
 
 Installation
 -
