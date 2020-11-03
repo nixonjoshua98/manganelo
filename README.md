@@ -1,3 +1,5 @@
+[![Downloads](https://pepy.tech/badge/manganelo)](https://pepy.tech/project/manganelo) [![Downloads](https://pepy.tech/badge/manganelo/month)](https://pepy.tech/project/manganelo/month)
+
 # Unofficial Manganelo API
 
 ###### Package to scrape the Manganelo website. Want to contribute? Pull requests are encouraged!
