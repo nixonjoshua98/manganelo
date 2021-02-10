@@ -85,7 +85,7 @@ class DownloadChapter(APIBase):
 		image_paths = []
 
 		for i, url in enumerate(image_urls):
-			image = self.send_request(url)
+			image = self.send_request_image(url)
 
 			image_ext = url.split(".")[-1]
 
