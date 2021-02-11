@@ -1,6 +1,7 @@
 import string
-import typing
 import dataclasses
+
+import functools as ft
 
 from bs4 import BeautifulSoup
 
@@ -41,7 +42,8 @@ class SearchManga(APIBase):
 
 		self._response = self.send_request(self.url)
 
-	def results(self) -> typing.Generator[MangaSearchResult, None, None]:
+	@ft.cached_property
+	def results(self) -> list:
 		"""
 		Extract the results from the request we sent earlier.
 		[Threaded] We join the thread, which means that we wait for the request to finish.
@@ -50,6 +52,8 @@ class SearchManga(APIBase):
 		"""
 
 		self._join_thread()
+
+		ls = []
 
 		# Entire page soup
 		soup = BeautifulSoup(self._response.content, "html.parser")
@@ -64,7 +68,9 @@ class SearchManga(APIBase):
 			title = manga.get("title", None)  # Manga title
 			link = manga.get("href", None)  # Link to the manga 'homepage'
 
-			yield MangaSearchResult(title=title, url=link)
+			ls.append(MangaSearchResult(title=title, url=link))
+
+		return ls
 
 	@staticmethod
 	def _generate_url(query: str) -> str:

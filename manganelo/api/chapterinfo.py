@@ -1,5 +1,7 @@
 import dataclasses
 
+import functools as ft
+
 from typing import List
 
 from bs4 import BeautifulSoup
@@ -31,6 +33,7 @@ class ChapterInfo(APIBase):
 			image_urls=cls._get_image_urls(soup)
 		)
 
+	@ft.cached_property
 	def results(self):
 		self._join_thread()
 

@@ -1,16 +1,18 @@
 from setuptools import setup, find_packages
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+
+def read_file(file):
+    with open(file, "r") as fh:
+        return fh.read()
 
 setup(
     name="manganelo",
     packages=find_packages(),
-    version="1.5.1",
+    version="1.6.0",
     license="MIT",
 
     description="Unofficial API for the Manganelo website.",
-    long_description=long_description,
+    long_description=read_file("README.md"),
     long_description_content_type="text/markdown",
 
     author="Joshua Nixon",
@@ -18,7 +20,7 @@ setup(
 
     url="https://github.com/nixonjoshua98/manganelo",
 
-    download_url="https://github.com/nixonjoshua98/manganelo/archive/v1.5.1.tar.gz",
+    download_url="https://github.com/nixonjoshua98/manganelo/archive/v1.6.0.tar.gz",
   
     keywords=["manga", "manganelo", "scrapper", "web", "mangakakalot", "thread", "comic", "manhwa"],
   

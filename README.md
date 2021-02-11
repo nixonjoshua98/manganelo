@@ -11,6 +11,10 @@ Installation
 pip install manganelo
 ```
 
+Changes
+-
+`1.6.0` - **results** method is now a cached property
+
 Examples
 -
 
@@ -28,8 +32,8 @@ Not threaded (Single-threaded):
 """
 search = SearchManga("Mythical Realm", threaded=True)
 
-# .results() returns a generator - We create a list from the generator here
-results = list(search.results())
+# .results() returns a list
+results = search.results
 
 # results = [MangaSearchResult(title=?, url=?), MangaSearchResult(title=?, url=?)]
 ```
@@ -44,7 +48,7 @@ best_result = results[0]
 
 manga_info = MangaInfo(best_result.url, threaded=True)
 
-manga_page = manga_info.results()
+manga_page = manga_info.results
 ```
 
 ##### Indiviual Manga Homepage Data (manga_page)
@@ -76,7 +80,7 @@ for chapter in manga_page.chapters:
 
 	dl = DownloadChapter(chapter.url, file)
 
-	results = dl.results()
+	results = dl.results
 
 	if results.saved_ok:
 		print(results.path)
@@ -91,7 +95,7 @@ from manganelo import ChapterInfo
 # Example: https://manganelo.com/chapter/up919279/chapter_1.1
 info = ChapterInfo(chapter.url)
 
-results = info.results()
+results = info.results
 
 print(results.title, results.url, results.image_urls)
 ```
@@ -106,14 +110,14 @@ best_result = results[0]
 
 manga_info = MangaInfo(best_result.url, threaded=False)
 
-manga_page = manga_info.results()
+manga_page = manga_info.results
 
 for chapter in manga_page.chapters:
 	file = f"./Raid {chapter.num}.pdf"
 
 	dl = DownloadChapter(chapter.url, file)
 
-	results = dl.results()
+	results = dl.results
 
 	if results.saved_ok:
 		print(results.path, results.percent_saved)

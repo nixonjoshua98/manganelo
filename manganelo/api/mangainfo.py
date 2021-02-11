@@ -2,6 +2,8 @@ import dataclasses
 import typing
 import ast
 
+import functools as ft
+
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -52,6 +54,7 @@ class MangaInfo(APIBase):
 
         self._soup: BeautifulSoup = BeautifulSoup(response.content, "html.parser")
 
+    @ft.cached_property
     def results(self) -> MangaData:
         """ Performs the soup extraction and returns an object """
 
@@ -61,7 +64,7 @@ class MangaInfo(APIBase):
 
         table.update(self._parse_extended_table())
 
-        r = MangaData(
+        return MangaData(
             url=self._src_url,
             title=self._get_title(),
             status=table.get("status", None),
@@ -74,8 +77,6 @@ class MangaInfo(APIBase):
             icon=self._get_icon(),
             description=self._get_description()
         )
-
-        return r
 
     def _get_title(self) -> typing.Union[str, None]:
         """ Return the title present on the page """

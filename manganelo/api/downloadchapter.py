@@ -4,6 +4,8 @@ import tempfile
 import typing
 import dataclasses
 
+import functools as ft
+
 from reportlab.pdfgen import canvas
 from bs4 import BeautifulSoup
 from PIL import Image
@@ -39,6 +41,7 @@ class DownloadChapter(APIBase):
 
 		super(DownloadChapter, self).__init__(threaded)
 
+	@ft.cached_property
 	def results(self):
 		"""
 		Returns the status of the download.
