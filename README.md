@@ -11,7 +11,7 @@ Installation
 pip install manganelo
 ```
 
-Changes
+Change Log
 -
 `1.6.0` - **results** method is now a cached property
 
@@ -32,7 +32,6 @@ Not threaded (Single-threaded):
 """
 search = SearchManga("Mythical Realm", threaded=True)
 
-# .results() returns a list
 results = search.results
 
 # results = [MangaSearchResult(title=?, url=?), MangaSearchResult(title=?, url=?)]
@@ -104,7 +103,7 @@ print(results.title, results.url, results.image_urls)
 ```python
 search = SearchManga("Raid", threaded=False)
 
-results = list(search.results())
+results = search.results
 
 best_result = results[0]
 
