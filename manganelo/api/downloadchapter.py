@@ -33,7 +33,7 @@ class DownloadChapter(APIBase):
 		"""
 
 		self._src_url = src_url
-		self._dst_path = dst_path
+		self._dst_path = self._update_destination_path(dst_path)
 		self._title = None
 
 		self._saved = False
@@ -115,6 +115,16 @@ class DownloadChapter(APIBase):
 						image_paths.append(image_dst_path)
 
 		return image_paths
+
+	def _update_destination_path(self, path):
+		""" Remove the illegal characters from the file path. """
+
+		dir_, file = os.path.split(path)
+
+		for char in ("\\", "/", ":", "*", "?", "<", ">", "|"):
+			file = file.replace(char, " ")
+
+		return os.path.join(dir_, file)
 
 	def _create_pdf(self, images: typing.List[str]) -> int:
 		"""
