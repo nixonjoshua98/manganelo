@@ -1,6 +1,7 @@
 import dataclasses
 import typing
 import ast
+import locale
 
 import functools as ft
 
@@ -171,10 +172,12 @@ class MangaInfo(APIBase):
 
         updated, views, *_ = rows
 
-        # Remove AM and PM
-        updated = updated[0:-3]
+        # Standardize locale to match foreign language
+        curr_local = locale.getlocale()[0]
+        locale.setlocale(locale.LC_ALL, "en_US")
+        updated = datetime.strptime(updated, "%b %d,%Y - %I:%M %p")
+        locale.setlocale(locale.LC_ALL, curr_local)
 
-        updated = datetime.strptime(updated, "%b %d,%Y - %H:%M")
         views = int(views.replace(",", ""))
 
         return {"updated": updated, "views": views}
