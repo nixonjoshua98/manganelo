@@ -175,7 +175,7 @@ class MangaInfo(APIBase):
         # Standardize locale to match foreign language
         curr_local = locale.getlocale()[0]
         locale.setlocale(locale.LC_ALL, "en_US")
-        updated = datetime.strptime(updated, "%b %d,%Y - %I:%M %p")
+        updated = datetime.strptime(updated, "%b %d,%Y - %H:%M %p")
         locale.setlocale(locale.LC_ALL, curr_local)
 
         views = int(views.replace(",", ""))
