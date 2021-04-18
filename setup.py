@@ -1,7 +1,5 @@
 from setuptools import setup, find_packages
 
-VERSION = "1.7"
-
 
 def read_file(file):
     with open(file, "r") as fh:
@@ -11,7 +9,7 @@ def read_file(file):
 setup(
     name="manganelo",
     packages=find_packages(),
-    version=VERSION,
+    version="1.17",
     license="MIT",
 
     description="Unofficial API for the Manganelo website.",
@@ -23,7 +21,7 @@ setup(
 
     url="https://github.com/nixonjoshua98/manganelo",
 
-    download_url=f"https://github.com/nixonjoshua98/manganelo/archive/v{VERSION}.tar.gz",
+    download_url="https://github.com/nixonjoshua98/manganelo/archive/refs/tags/1.17.tar.gz",
   
     keywords=["manga", "manganelo", "scrapper", "web", "mangakakalot", "thread", "comic", "manhwa"],
   
