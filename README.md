@@ -6,13 +6,9 @@
 
 Installation
 -
-**Python 3.7 +**
+**Python 3.7+**
 ```cmd
 pip install manganelo
-```
-**Latest Unreleased**
-```cmd
-pip install -U git+https://github.com/nixonjoshua98/manganelo
 ```
 
 Change Log
@@ -22,7 +18,7 @@ Change Log
 Examples
 -
 
-##### Standard Usage
+#### Standard Usage
 ```python
 search = SearchManga("Raid", threaded=False)
 
@@ -54,7 +50,7 @@ results = manganelo.search(title="Naruto")
 first = results[0]
 
 chapters = first.chapter_list()
-# or chapters = manganelo.chapters(url=first.url)
+# manganelo.chapter_list(url=first.url)
 
 chap_one = chapters[0]
 
