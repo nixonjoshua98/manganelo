@@ -8,6 +8,8 @@ import functools as ft
 from datetime import datetime
 from bs4 import BeautifulSoup
 
+from manganelo import utils
+
 from manganelo.api.apibase import APIBase
 
 
@@ -172,10 +174,7 @@ class MangaInfo(APIBase):
 
         updated, views, *_ = rows
 
-        # Standardize locale to match foreign language
-        locale.setlocale(locale.LC_ALL, "en_US.UTF8")
-        updated = datetime.strptime(updated, "%b %d,%Y - %H:%M %p")
-        locale.setlocale(locale.LC_ALL, '')
+        updated = utils.parse_date(updated, "%b %d,%Y - %H:%M %p")
 
         views = int(views.replace(",", ""))
 
