@@ -52,10 +52,11 @@ class ChapterDownloader:
 				with open(os.path.join(dir_, f"{i}.{ext}"), "wb") as fh:
 					image.raw.decode_content = True
 
+					# noinspection PyBroadException
 					try:
 						shutil.copyfileobj(image.raw, fh)
 
-					except Exception as e:
+					except:
 						continue
 
 					images.append(fh.name)
@@ -68,11 +69,13 @@ class ChapterDownloader:
 		pdf = canvas.Canvas(path)
 
 		for image in images:
+
+			# noinspection PyBroadException
 			try:
 				with Image.open(image) as img:
 					w, h = img.size
 
-			except (OSError, UnboundLocalError):
+			except:
 				continue
 
 			pdf.setPageSize((w, h))  # Set the page dimensions to the image dimensions

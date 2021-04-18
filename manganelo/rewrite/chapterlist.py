@@ -17,7 +17,7 @@ class Chapter:
 	def title(self): return self._soup.find("a").text
 
 	@ft.cached_property
-	def url(self): return self._soup.find("a").get("href", None)
+	def url(self): return self._soup.find("a").get("href")
 
 	@ft.cached_property
 	def chapter(self): return ast.literal_eval(self.url.split("chapter_")[-1])
@@ -29,10 +29,11 @@ class Chapter:
 
 	@ft.cached_property
 	def uploaded(self):
-		s = self._soup.find("span", class_="chapter-time text-nowrap").get("title", None)
+		s = self._soup.find("span", class_="chapter-time text-nowrap").get("title")
 		return utils.parse_date(s, "%b %d,%Y %H:%M")
 
-	def download(self, *, path): return ChapterDownloader(self.url).download(path=path)
+	def download(self, *, path):
+		return ChapterDownloader(self.url).download(path)
 
 
 class ChapterList:

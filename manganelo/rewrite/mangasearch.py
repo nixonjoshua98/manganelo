@@ -44,7 +44,7 @@ class SearchResult:
 	def chapter_list(self): return ChapterList(self.url).get()
 
 
-class SearchManga:
+class MangaSearch:
 	def __init__(self, title: str):
 		self._raw_title = title
 

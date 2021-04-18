@@ -1,12 +1,13 @@
 
 
 def search(*, title: str):
-	from manganelo.rewrite.mangasearch import SearchManga
-	return SearchManga(title).get()
+	from manganelo.rewrite.mangasearch import MangaSearch
+
+	return MangaSearch(title).get()
 
 
-def chapters(*, url: str):
-	from manganelo.rewrite.mangasearch import ChapterList
+def chapter_list(*, url: str):
+	from manganelo.rewrite.chapterlist import ChapterList
 
 	return ChapterList(url).get()
 
