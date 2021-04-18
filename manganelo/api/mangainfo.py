@@ -173,10 +173,9 @@ class MangaInfo(APIBase):
         updated, views, *_ = rows
 
         # Standardize locale to match foreign language
-        curr_local = locale.getlocale()[0]
-        locale.setlocale(locale.LC_ALL, "en_US")
+        locale.setlocale(locale.LC_ALL, "en_US.UTF8")
         updated = datetime.strptime(updated, "%b %d,%Y - %H:%M %p")
-        locale.setlocale(locale.LC_ALL, curr_local)
+        locale.setlocale(locale.LC_ALL, '')
 
         views = int(views.replace(",", ""))
 
