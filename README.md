@@ -10,6 +10,10 @@ Installation
 ```cmd
 pip install manganelo
 ```
+**Latest Unreleased**
+```cmd
+pip install -U git+https://github.com/nixonjoshua98/manganelo
+```
 
 Change Log
 -
