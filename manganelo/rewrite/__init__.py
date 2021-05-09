@@ -6,10 +6,14 @@ def search(*, title: str):
 	return MangaSearch(title).get()
 
 
-def chapter_list(*, url: str):
-	from manganelo.rewrite.chapterlist import ChapterList
+def manga_page(*, url: str):
+	from manganelo.rewrite.mangapage import MangaPageGetter
 
-	return ChapterList(url).get()
+	return MangaPageGetter(url).get()
+
+
+def chapter_list(*, url: str):
+	return manga_page(url=url).chapter_list()
 
 
 def download(*, url: str, path: str):

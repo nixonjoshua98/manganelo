@@ -55,11 +55,11 @@ chapters = first.chapter_list()
 chap_one = chapters[0]
 
 path = chap_one.download(path=f"D:\\Repos\\manganelo\\{chap_one.title}.pdf")
-# or path = manganelo.download(url=chap_one.url, path=...)
+# manganelo.download(url=chap_one.url, path=...)
 
 print(path)  # D:\Repos\manganelo\Vol.1 Chapter 0  Naruto Pilot Manga.pdf
 ```
 
 Contact Me
 -
-I am happy to respond to emails at **joshuanixonofficial@gmail.com**
+Email: joshuanixonofficial@gmail.com

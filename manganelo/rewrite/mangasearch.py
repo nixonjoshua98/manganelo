@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from manganelo.rewrite import utils, siterequests
 
-from manganelo.rewrite.chapterlist import ChapterList
+from manganelo.rewrite.mangapage import MangaPageGetter
 
 import functools as ft
 
@@ -41,7 +41,7 @@ class SearchResult:
 	def rating(self): return ast.literal_eval(self._soup.find("em", class_="item-rate").text)
 
 	@ft.lru_cache()
-	def chapter_list(self): return ChapterList(self.url).get()
+	def chapter_list(self): return MangaPageGetter(self.url).get().chapter_list()
 
 
 class MangaSearch:
