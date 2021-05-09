@@ -72,6 +72,9 @@ class MangaPage:
 	@ft.cached_property
 	def description(self): return self._soup.find("div", class_="panel-story-info-description").text.strip()
 
+	@ft.cached_property
+	def latest_chapter(self): return self.chapter_list[-1]
+
 	@ft.lru_cache()
 	def chapter_list(self):
 		panels = self._soup.find(class_="panel-story-chapter-list")
