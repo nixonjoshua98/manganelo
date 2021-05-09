@@ -44,6 +44,10 @@ class MangaPage:
 		return self._soup.find(class_="story-info-right").find("h1").text.strip()
 
 	@ft.cached_property
+	def icon_url(self):
+		return self._soup.find("img", class_="img-loading")["src"]
+
+	@ft.cached_property
 	def description(self):
 		return self._soup.find("div", class_="panel-story-info-description").text.strip()
 
