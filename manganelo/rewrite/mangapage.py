@@ -39,6 +39,14 @@ class MangaPage:
 	def __init__(self, soup):
 		self._soup = soup
 
+	@ft.cached_property
+	def title(self):
+		return self._soup.find(class_="story-info-right").find("h1").text.strip()
+
+	@ft.cached_property
+	def description(self):
+		return self._soup.find("div", class_="panel-story-info-description").text.strip()
+
 	@ft.lru_cache()
 	def chapter_list(self):
 		panels = self._soup.find(class_="panel-story-chapter-list")
