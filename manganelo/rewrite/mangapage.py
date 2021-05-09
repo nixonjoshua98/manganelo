@@ -40,16 +40,35 @@ class MangaPage:
 		self._soup = soup
 
 	@ft.cached_property
-	def title(self):
-		return self._soup.find(class_="story-info-right").find("h1").text.strip()
+	def title(self): return self._soup.find(class_="story-info-right").find("h1").text.strip()
 
 	@ft.cached_property
-	def icon_url(self):
-		return self._soup.find("img", class_="img-loading")["src"]
+	def authors(self):
+		values = self._soup.find("table", class_="variations-tableInfo").find_all("td", class_="table-value")
+		author = values[1]
+
+		return [e.strip() for e in author.text.split(",")]
 
 	@ft.cached_property
-	def description(self):
-		return self._soup.find("div", class_="panel-story-info-description").text.strip()
+	def genres(self):
+		values = self._soup.find("table", class_="variations-tableInfo").find_all("td", class_="table-value")
+		genres = values[3].find_all("a", class_="a-h")
+
+		return [e.text.strip() for e in genres]
+
+	@ft.cached_property
+	def views(self):
+		values = self._soup.find("div", class_="story-info-right-extent").find_all("span", class_="stre-value")
+
+		s = values[1].text.strip()
+
+		return ast.literal_eval(s.replace(",", ""))
+
+	@ft.cached_property
+	def icon_url(self): return self._soup.find("div", class_="story-info-left").find("img", class_="img-loading")["src"]
+
+	@ft.cached_property
+	def description(self): return self._soup.find("div", class_="panel-story-info-description").text.strip()
 
 	@ft.lru_cache()
 	def chapter_list(self):
