@@ -36,8 +36,10 @@ class Chapter:
 
 
 class MangaPage:
-	def __init__(self, soup):
+	def __init__(self, url, soup):
 		self._soup = soup
+
+		self.url = url
 
 	@ft.cached_property
 	def title(self): return self._soup.find(class_="story-info-right").find("h1").text.strip()
@@ -86,4 +88,4 @@ class MangaPageGetter:
 
 		soup = BeautifulSoup(r.content, "html.parser")
 
-		return MangaPage(soup)
+		return MangaPage(self._url, soup)
