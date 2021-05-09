@@ -40,6 +40,9 @@ class SearchResult:
 	@ft.cached_property
 	def rating(self): return ast.literal_eval(self._soup.find("em", class_="item-rate").text)
 
+	@ft.cached_property
+	def latest_chapter(self): return self.chapter_list[-1]
+
 	@ft.lru_cache()
 	def chapter_list(self): return MangaPageGetter(self.url).get().chapter_list()
 
