@@ -30,6 +30,7 @@ class Chapter:
 	@ft.cached_property
 	def uploaded(self):
 		s = self._soup.find("span", class_="chapter-time text-nowrap").get("title")
+
 		return utils.parse_date(s, "%b %d,%Y %H:%M")
 
 	def download(self, *, path): return ChapterDownloader(self.url).download(path)
@@ -71,9 +72,6 @@ class MangaPage:
 
 	@ft.cached_property
 	def description(self): return self._soup.find("div", class_="panel-story-info-description").text.strip()
-
-	@ft.cached_property
-	def latest_chapter(self): return self.chapter_list()[-1]
 
 	@ft.lru_cache()
 	def chapter_list(self):

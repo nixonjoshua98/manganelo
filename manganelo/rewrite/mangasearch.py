@@ -26,6 +26,7 @@ class SearchResult:
 	@ft.cached_property
 	def updated(self):
 		s = self._soup.find("span", class_="text-nowrap item-time").text
+
 		return utils.parse_date(s, "Updated : %b %d,%Y - %H:%M")
 
 	@ft.cached_property
@@ -35,13 +36,11 @@ class SearchResult:
 	@ft.cached_property
 	def views(self):
 		s = self._soup.find_all("span", class_="text-nowrap item-time")[-1].text
+
 		return ast.literal_eval(s.replace("View : ", "").replace(",", ""))
 
 	@ft.cached_property
 	def rating(self): return ast.literal_eval(self._soup.find("em", class_="item-rate").text)
-
-	@ft.cached_property
-	def latest_chapter(self): return self.chapter_list()[-1]
 
 	@ft.lru_cache()
 	def chapter_list(self): return MangaPageGetter(self.url).get().chapter_list()

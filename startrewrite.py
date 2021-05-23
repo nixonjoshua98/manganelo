@@ -7,6 +7,8 @@ first = results[0]
 
 page = manganelo.manga_page(url=first.url)
 
+print(page.url)
+
 chapters = first.chapter_list()
 # manganelo.chapters(url=first.url)
 
