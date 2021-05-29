@@ -1,3 +1,4 @@
+import re
 import ast
 import typing
 
@@ -21,7 +22,8 @@ class Chapter:
 	def url(self): return self._soup.find("a").get("href")
 
 	@ft.cached_property
-	def chapter(self): return ast.literal_eval(self.url.split("chapter_")[-1])
+	def chapter(self):
+		return ast.literal_eval(re.split("-|_", self.url.split("chapter")[-1])[-1])
 
 	@ft.cached_property
 	def views(self):
