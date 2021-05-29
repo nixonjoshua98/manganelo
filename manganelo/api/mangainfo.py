@@ -1,7 +1,7 @@
 import dataclasses
 import typing
 import ast
-import locale
+import re
 
 import functools as ft
 
@@ -117,8 +117,7 @@ class MangaInfo(APIBase):
                 url = ele.find("a")["href"]
                 text = ele.find("a").text
 
-                # Convert the string to the data type it needs. Eg 11.5 -> float | 10.0 -> int
-                num = ast.literal_eval(url.split("chapter_")[-1])
+                num = ast.literal_eval(re.split("-|_", url.split("chapter")[-1])[-1])
 
                 c = MangaChapter(url=url, num=num, title=text)
 

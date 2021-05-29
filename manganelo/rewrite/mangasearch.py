@@ -1,13 +1,14 @@
 import ast
 import string
+import typing
+
+import functools as ft
 
 from bs4 import BeautifulSoup
 
 from manganelo.rewrite import utils, siterequests
 
-from manganelo.rewrite.mangapage import MangaPageGetter
-
-import functools as ft
+from manganelo.rewrite.mangapage import MangaPageGetter, Chapter
 
 
 class SearchResult:
@@ -43,10 +44,11 @@ class SearchResult:
 	def rating(self): return ast.literal_eval(self._soup.find("em", class_="item-rate").text)
 
 	@ft.lru_cache()
-	def chapter_list(self): return MangaPageGetter(self.url).get().chapter_list()
+	def chapter_list(self) -> typing.List[Chapter]:
+		return MangaPageGetter(self.url).get().chapter_list()
 
 
-class MangaSearch:
+class _MangaSearch:
 	def __init__(self, title: str):
 		self._raw_title = title
 

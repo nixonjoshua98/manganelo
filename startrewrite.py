@@ -5,12 +5,14 @@ results = manganelo.search(title="Naruto")
 
 first = results[0]
 
-page = manganelo.manga_page(url=first.url)
+page = manganelo.manga_page(url="http://manganelo.com/manga/black_clover")
 
-print(page.url)
 
 chapters = first.chapter_list()
 # manganelo.chapters(url=first.url)
+
+for c in chapters:
+	print(c.title)
 
 chap_one = chapters[0]
 

@@ -1,4 +1,5 @@
 import ast
+import typing
 
 import functools as ft
 
@@ -33,7 +34,8 @@ class Chapter:
 
 		return utils.parse_date(s, "%b %d,%Y %H:%M")
 
-	def download(self, *, path): return ChapterDownloader(self.url).download(path)
+	def download(self, *, path):
+		return ChapterDownloader(self.url).download(path)
 
 
 class MangaPage:
@@ -74,7 +76,7 @@ class MangaPage:
 	def description(self): return self._soup.find("div", class_="panel-story-info-description").text.strip()
 
 	@ft.lru_cache()
-	def chapter_list(self):
+	def chapter_list(self) -> typing.List[Chapter]:
 		panels = self._soup.find(class_="panel-story-chapter-list")
 
 		return [Chapter(ele) for ele in panels.find_all(class_="a-h")[::-1] if ele is not None]
@@ -84,7 +86,7 @@ class MangaPageGetter:
 	def __init__(self, url):
 		self._url = url
 
-	def get(self):
+	def get(self) -> MangaPage:
 		r = siterequests.get(self._url)
 
 		soup = BeautifulSoup(r.content, "html.parser")
