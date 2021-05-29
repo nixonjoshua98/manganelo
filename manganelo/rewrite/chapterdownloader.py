@@ -8,7 +8,7 @@ from PIL import Image
 
 from reportlab.pdfgen import canvas
 
-from manganelo.rewrite import utils, siterequests
+from . import utils, siterequests
 
 
 class ChapterDownloader:
@@ -49,17 +49,10 @@ class ChapterDownloader:
 			if image is not None:
 				ext = url.split(".")[-1]
 
-				with open(os.path.join(dir_, f"{i}.{ext}"), "wb") as fh:
-					image.raw.decode_content = True
+				path = utils.save_image(image, os.path.join(dir_, f"{i}.{ext}"))
 
-					# noinspection PyBroadException
-					try:
-						shutil.copyfileobj(image.raw, fh)
-
-					except:
-						continue
-
-					images.append(fh.name)
+				if path:
+					images.append(path)
 
 		return images
 

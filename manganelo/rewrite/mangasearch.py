@@ -6,7 +6,7 @@ import functools as ft
 
 from bs4 import BeautifulSoup
 
-from manganelo.rewrite import utils, siterequests
+from . import utils, siterequests
 
 from manganelo.rewrite.mangapage import MangaPageGetter, Chapter
 
@@ -16,13 +16,14 @@ class SearchResult:
 		self._soup = soup
 
 	@ft.cached_property
-	def title(self): return self._soup.find(class_="item-img").get("title", None)
+	def title(self): return self._soup.find(class_="item-img").get("title")
 
 	@ft.cached_property
-	def url(self): return self._soup.find(class_="item-img").get("href", None)
+	def url(self): return self._soup.find(class_="item-img").get("href")
 
 	@ft.cached_property
-	def icon_url(self): return self._soup.find("img", class_="img-loading").get("src", None)
+	def icon_url(self): return self._soup.find("img", class_="img-loading").get("src")
+
 
 	@ft.cached_property
 	def updated(self):
@@ -46,6 +47,10 @@ class SearchResult:
 	@ft.lru_cache()
 	def chapter_list(self) -> typing.List[Chapter]:
 		return MangaPageGetter(self.url).get().chapter_list()
+
+	def download_icon(self, *, path: str):
+		if img := siterequests.dl_image(self.icon_url):
+			return utils.save_image(img, path)
 
 
 class _MangaSearch:

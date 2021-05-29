@@ -1,7 +1,21 @@
 import os
+import shutil
 import locale
+import typing
 
 import datetime as dt
+
+
+def save_image(image_data, path) -> typing.Union[str, None]:
+	with open(path, "wb") as fh:
+		image_data.raw.decode_content = True
+
+		# noinspection PyBroadException
+		try:
+			shutil.copyfileobj(image_data.raw, fh)
+
+		except:
+			""" Error """
 
 
 def parse_date(s: str, _format: str):
