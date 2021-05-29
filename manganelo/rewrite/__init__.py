@@ -1,9 +1,9 @@
 
 
 def search(*, title: str):
-	from manganelo.rewrite.mangasearch import _MangaSearch
+	from manganelo.rewrite.mangasearch import MangaSearch
 
-	return _MangaSearch(title).get()
+	return MangaSearch(title).get()
 
 
 def manga_page(*, url: str):

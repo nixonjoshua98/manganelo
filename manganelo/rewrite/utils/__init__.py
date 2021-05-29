@@ -7,6 +7,8 @@ import datetime as dt
 
 
 def save_image(image_data, path) -> typing.Union[str, None]:
+	path = validate_path(path)
+
 	with open(path, "wb") as fh:
 		image_data.raw.decode_content = True
 
@@ -15,7 +17,9 @@ def save_image(image_data, path) -> typing.Union[str, None]:
 			shutil.copyfileobj(image_data.raw, fh)
 
 		except:
-			""" Error """
+			return None
+
+	return path
 
 
 def parse_date(s: str, _format: str):

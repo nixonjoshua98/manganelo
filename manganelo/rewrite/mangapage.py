@@ -81,6 +81,10 @@ class MangaPage:
 
 		return [Chapter(ele) for ele in panels.find_all(class_="a-h")[::-1] if ele is not None]
 
+	def download_icon(self, *, path: str):
+		if img := siterequests.dl_image(self.icon_url):
+			return utils.save_image(img, path)
+
 
 class MangaPageGetter:
 	def __init__(self, url):

@@ -24,7 +24,6 @@ class SearchResult:
 	@ft.cached_property
 	def icon_url(self): return self._soup.find("img", class_="img-loading").get("src")
 
-
 	@ft.cached_property
 	def updated(self):
 		s = self._soup.find("span", class_="text-nowrap item-time").text
@@ -53,7 +52,7 @@ class SearchResult:
 			return utils.save_image(img, path)
 
 
-class _MangaSearch:
+class MangaSearch:
 	def __init__(self, title: str):
 		self._raw_title = title
 
