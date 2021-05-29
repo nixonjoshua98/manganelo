@@ -1,4 +1,6 @@
 
+from .exceptions import *
+
 
 def search(*, title: str):
 	from manganelo.rewrite.mangasearch import MangaSearch

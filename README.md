@@ -47,17 +47,18 @@ import manganelo.rewrite as manganelo
 
 results = manganelo.search(title="Naruto")
 
-first = results[0]
+page = manganelo.manga_page(url="http://manganelo.com/manga/black_clover")
 
-chapters = first.chapter_list()
-# manganelo.chapter_list(url=first.url)
+path = page.download_icon(path="./Icon.png")
 
-chap_one = chapters[0]
+print(path)
 
-path = chap_one.download(path=f"D:\\Repos\\manganelo\\{chap_one.title}.pdf")
-# manganelo.download(url=chap_one.url, path=...)
+chapters = results[0].chapter_list()
 
-print(path)  # D:\Repos\manganelo\Vol.1 Chapter 0  Naruto Pilot Manga.pdf
+path = chapters[0].download(path=f"./Chapter.pdf")
+
+print(path)
+
 ```
 
 Contact Me

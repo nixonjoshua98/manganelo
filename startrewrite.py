@@ -3,7 +3,7 @@ import manganelo.rewrite as manganelo
 
 results = manganelo.search(title="Naruto")
 
-page = manganelo.manga_page(url="http://manganelo.com/manga/black_clover")
+page = manganelo.manga_page(url="https://manganelo.com/manga/uit2233589789789")
 
 path = page.download_icon(path="./Icon.png")
 

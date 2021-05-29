@@ -6,9 +6,11 @@ import functools as ft
 
 from bs4 import BeautifulSoup
 
-from manganelo.rewrite import utils, siterequests
+from . import utils, siterequests
 
-from manganelo.rewrite.chapterdownloader import ChapterDownloader
+from .exceptions import NotFound
+
+from .chapterdownloader import ChapterDownloader
 
 
 class Chapter:
@@ -96,5 +98,8 @@ class MangaPageGetter:
 		r = siterequests.get(self._url)
 
 		soup = BeautifulSoup(r.content, "html.parser")
+
+		if "404" in soup.find("title").text:
+			raise NotFound(f"Page '{self._url}' was not found")
 
 		return MangaPage(self._url, soup)
