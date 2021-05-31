@@ -60,7 +60,3 @@ path = chapters[0].download(path=f"./Chapter.pdf")
 print(path)
 
 ```
-
-Contact Me
--
-Email: joshuanixonofficial@gmail.com
