@@ -1,12 +1,10 @@
 [![Downloads](https://pepy.tech/badge/manganelo)](https://pepy.tech/project/manganelo) [![Downloads](https://pepy.tech/badge/manganelo/month)](https://pepy.tech/project/manganelo/month) [![Downloads](https://pepy.tech/badge/manganelo/week)](https://pepy.tech/project/manganelo/week)
 
-# Unofficial Manganelo API
-
-###### Package to scrape the Manganelo (now named Manganato) website. Want to contribute? Pull requests are encouraged!
+# Unofficial Manganelo (Manganato) API
 
 Installation
 -
-**Python 3.7+**
+**Python 3.7+ (latest version requires version Py3.9)**
 ```cmd
 pip install manganelo
 ```
@@ -18,7 +16,7 @@ Change Log
 Examples
 -
 
-#### Standard Usage
+#### Legacy Examples (will be removed soon)
 ```python
 search = SearchManga("Raid", threaded=False)
 
@@ -41,22 +39,20 @@ for chapter in manga_page.chapters:
 		print(results.path, results.percent_saved)
 ```
 
-#### Rewrite Version (will eventually become standard)
+#### Rewrite Version (will soon become standard)
 ```python
 import manganelo.rewrite as manganelo
 
-results = manganelo.search(title="Naruto")
+results = manganelo.search("Naruto")
 
-page = manganelo.manga_page(url="http://manganelo.com/manga/black_clover")
+for r in results:
+    print(r.title, r.views)
 
-path = page.download_icon(path="./Icon.png")
+    chapters = r.chapter_list()
 
-print(path)
+    for c in chapters:
+        print(f"#{c.chapter} | {c.title}")
 
-chapters = results[0].chapter_list()
-
-path = chapters[0].download(path=f"./Chapter.pdf")
-
-print(path)
+        chapter_path = c.download(path=f"./Chapter {c.chapter}.pdf")
 
 ```

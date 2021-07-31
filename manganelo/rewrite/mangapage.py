@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 from . import utils, siterequests
 
-from .exceptions import NotFound
+from .errors import NotFound
 
 from .chapterdownloader import ChapterDownloader
 
@@ -25,7 +25,7 @@ class Chapter:
 
 	@ft.cached_property
 	def chapter(self):
-		return ast.literal_eval(re.split("-|_", self.url.split("chapter")[-1])[-1])
+		return ast.literal_eval(re.split("[-_]", self.url.split("chapter")[-1])[-1])
 
 	@ft.cached_property
 	def views(self):
@@ -66,6 +66,12 @@ class MangaPage:
 		return [e.text.strip() for e in genres]
 
 	@ft.cached_property
+	def updated(self):
+		values = self._soup.find("div", class_="story-info-right-extent").find_all("span", class_="stre-value")
+
+		return utils.parse_date(values[0].text.strip(), "%b %d,%Y - %H:%M %p")
+
+	@ft.cached_property
 	def views(self):
 		values = self._soup.find("div", class_="story-info-right-extent").find_all("span", class_="stre-value")
 
@@ -79,7 +85,7 @@ class MangaPage:
 	@ft.cached_property
 	def description(self): return self._soup.find("div", class_="panel-story-info-description").text.strip()
 
-	@ft.lru_cache()
+	@ft.cache
 	def chapter_list(self) -> typing.List[Chapter]:
 		panels = self._soup.find(class_="panel-story-chapter-list")
 

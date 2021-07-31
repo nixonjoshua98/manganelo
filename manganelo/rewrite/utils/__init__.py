@@ -16,7 +16,7 @@ def save_image(image_data, path) -> typing.Union[str, None]:
 		try:
 			shutil.copyfileobj(image_data.raw, fh)
 
-		except:
+		except BaseException:
 			return None
 
 	return path
