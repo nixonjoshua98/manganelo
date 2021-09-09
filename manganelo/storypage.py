@@ -1,6 +1,5 @@
 import re
 import ast
-import typing
 
 import functools as ft
 
@@ -9,8 +8,7 @@ from bs4 import BeautifulSoup
 from . import utils, siterequests
 
 from .errors import NotFound
-
-from .chapterdownloader import ChapterDownloader
+from .chapterdownload import download_chapter
 
 
 class Chapter:
@@ -38,11 +36,11 @@ class Chapter:
 
 		return utils.parse_date(s, "%b %d,%Y %H:%M")
 
-	def download(self, *, path):
-		return ChapterDownloader(self.url).download(path)
+	def download(self, path):
+		return download_chapter(self.url, path)
 
 
-class MangaPage:
+class StoryPage:
 	def __init__(self, url, soup):
 		self._soup = soup
 
@@ -86,26 +84,22 @@ class MangaPage:
 	def description(self): return self._soup.find("div", class_="panel-story-info-description").text.strip()
 
 	@ft.cache
-	def chapter_list(self) -> typing.List[Chapter]:
+	def chapter_list(self):
 		panels = self._soup.find(class_="panel-story-chapter-list")
 
 		return [Chapter(ele) for ele in panels.find_all(class_="a-h")[::-1] if ele is not None]
 
 	def download_icon(self, *, path: str):
-		if img := siterequests.dl_image(self.icon_url):
+		if img := siterequests.get_image(self.icon_url):
 			return utils.save_image(img, path)
 
 
-class MangaPageGetter:
-	def __init__(self, url):
-		self._url = url
+def get_story_page(url):
+	r = siterequests.get(url)
 
-	def get(self) -> MangaPage:
-		r = siterequests.get(self._url)
+	soup = BeautifulSoup(r.content, "html.parser")
 
-		soup = BeautifulSoup(r.content, "html.parser")
+	if "404" in soup.find("title").text:
+		raise NotFound(f"Page '{url}' was not found")
 
-		if "404" in soup.find("title").text:
-			raise NotFound(f"Page '{self._url}' was not found")
-
-		return MangaPage(self._url, soup)
+	return StoryPage(url, soup)

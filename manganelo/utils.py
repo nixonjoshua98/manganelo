@@ -1,19 +1,42 @@
+import os
+import shutil
 import locale
+import typing
+
+import datetime as dt
 
 
-from datetime import datetime
+def save_image(image_data, path) -> typing.Union[str, None]:
+	path = validate_path(path)
+
+	with open(path, "wb") as fh:
+		image_data.raw.decode_content = True
+
+		# noinspection PyBroadException
+		try:
+			shutil.copyfileobj(image_data.raw, fh)
+
+		except BaseException:
+			return None
+
+	return path
 
 
 def parse_date(s: str, _format: str):
 
 	try:
-		# Standardize locale to match foreign language
 		locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
-		date = datetime.strptime(s, _format)
+		return dt.datetime.strptime(s, _format)
 
 	finally:
-		# Rese-set the locale
 		locale.setlocale(locale.LC_ALL, '')
 
-	return date
+
+def validate_path(path: str):
+	dir_, file = os.path.split(path)
+
+	for char in ("\\", "/", ":", "*", "?", "<", ">", "|"):
+		file = file.replace(char, "")
+
+	return os.path.join(dir_, file)

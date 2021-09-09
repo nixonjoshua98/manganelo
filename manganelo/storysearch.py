@@ -1,14 +1,13 @@
 import ast
 import string
-import typing
 
 import functools as ft
 
 from bs4 import BeautifulSoup
 
-from . import utils, siterequests
+from manganelo import utils, siterequests
 
-from manganelo.rewrite.mangapage import MangaPageGetter, Chapter
+from manganelo.storypage import get_story_page, Chapter
 
 
 class SearchResult:
@@ -45,21 +44,17 @@ class SearchResult:
 
 	@ft.lru_cache()
 	def chapter_list(self) -> list[Chapter]:
-		return MangaPageGetter(self.url).get().chapter_list()
+		return get_story_page(self.url).chapter_list()
 
-	def download_icon(self, *, path: str):
-		if img := siterequests.dl_image(self.icon_url):
+	def download_icon(self, path: str):
+		if img := siterequests.get_image(self.icon_url):
 			return utils.save_image(img, path)
 
 
-def search_title(title: str) -> list[SearchResult]:
+def get_search_results(title: str) -> list[SearchResult]:
+	allowed_characters: str = string.ascii_letters + string.digits + "_"
 
-	def format_title() -> str:
-		allowed_characters: str = string.ascii_letters + string.digits + "_"
-
-		return "".join([char.lower() for char in title.replace(" ", "_") if char in allowed_characters])
-
-	title = format_title()
+	title = "".join([char.lower() for char in title.strip().replace(" ", "_") if char in allowed_characters])
 
 	r = siterequests.search(title)
 
