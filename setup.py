@@ -9,7 +9,7 @@ def read_file(file):
 setup(
 	name="manganelo",
 	packages=find_packages(),
-	version="1.19.0",
+	version="1.20.0",
 	license="MIT",
 
 	description="Unofficial API for the Manganelo/Manganato website.",
@@ -21,7 +21,7 @@ setup(
 
 	url="https://github.com/nixonjoshua98/manganelo",
 
-	download_url="https://github.com/nixonjoshua98/manganelo/archive/refs/tags/v1.19.0.tar.gz",
+	download_url="https://github.com/nixonjoshua98/manganelo/archive/refs/tags/v1.20.0.tar.gz",
 
 	keywords=["manga", "manganelo", "scrapper", "web", "mangakakalot", "thread", "comic", "manhwa", "manganato"],
 

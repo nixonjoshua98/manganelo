@@ -4,25 +4,17 @@
 
 Installation
 -
-**Python 3.7+ (latest version requires version Py3.9)**
+**Python 3.7+ (latest version requires Python 3.9+)**
 ```cmd
 pip install manganelo
 ```
 
-Change Log
--
-`1.19.0`
-- Removed legacy code and replaced default objects with the previous 'rewrite'
-- Some methods have been renamed
-
-`1.6.0` 
-- **results** method is now a cached property
-
 Examples
 -
-
 ```python
 import manganelo
+
+home_page = manganelo.get_home_page()
 
 results = manganelo.get_search_results("Naruto")
 
@@ -37,5 +29,4 @@ for r in results:
         print(f"#{c.chapter} | {c.title}")
 
         chapter_path = c.download(f"./Chapter {c.chapter}.pdf")
-
 ```

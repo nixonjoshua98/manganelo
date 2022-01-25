@@ -7,7 +7,8 @@ from PIL import Image
 
 from reportlab.pdfgen import canvas
 
-from manganelo import utils, siterequests
+from manganelo import siterequests
+from manganelo.common import utils
 
 
 def download_chapter(url, path):

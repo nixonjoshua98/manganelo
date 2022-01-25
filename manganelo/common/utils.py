@@ -2,8 +2,16 @@ import os
 import shutil
 import locale
 import typing
-
 import datetime as dt
+import html
+
+
+def unescape_html(s: str) -> str:
+	return html.unescape(s)
+
+
+def split_at(s: str, sep: str) -> list[str]:
+	return [x.strip() for x in s.split(sep)]
 
 
 def save_image(image_data, path) -> typing.Union[str, None]:

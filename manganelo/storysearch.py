@@ -5,7 +5,8 @@ import functools as ft
 
 from bs4 import BeautifulSoup
 
-from manganelo import utils, siterequests
+from manganelo import siterequests
+from manganelo.common import utils
 
 from manganelo.storypage import get_story_page, Chapter
 
@@ -42,7 +43,7 @@ class SearchResult:
 	@ft.cached_property
 	def rating(self) -> float: return float(self._soup.find("em", class_="item-rate").text)
 
-	@ft.lru_cache()
+	@ft.cache
 	def chapter_list(self) -> list[Chapter]:
 		return get_story_page(self.url).chapter_list()
 

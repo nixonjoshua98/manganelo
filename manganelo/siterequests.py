@@ -1,7 +1,7 @@
 import requests
 import urllib.parse
 
-ROOT_URL = "http://manganato.com/"
+from manganelo.common.constants import ROOT_URL
 
 
 def get(url):

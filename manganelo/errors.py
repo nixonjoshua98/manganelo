@@ -3,6 +3,5 @@ class ManganeloError(BaseException):
 	...
 
 
-class NotFound(ManganeloError):
+class ManganeloRequestError(ManganeloError):
 	...
-
