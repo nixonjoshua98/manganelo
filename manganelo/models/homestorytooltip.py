@@ -1,6 +1,6 @@
-from manganelo.common import utils
-
 import datetime as dt
+
+from ..common import utils
 
 
 class HomeStoryTooltip:
