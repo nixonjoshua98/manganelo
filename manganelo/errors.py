@@ -3,5 +3,5 @@ class ManganeloError(BaseException):
 	...
 
 
-class ManganeloRequestError(ManganeloError):
+class RequestError(ManganeloError):
 	...

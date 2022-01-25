@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from . import siterequests
 from .common import utils
 
-from .errors import ManganeloRequestError
+from .errors import RequestError
 from .chapterdownload import download_chapter
 
 
@@ -101,6 +101,6 @@ def get_story_page(url):
 	soup = BeautifulSoup(r.content, "html.parser")
 
 	if "404" in soup.find("title").text:
-		raise ManganeloRequestError(f"Page '{url}' was not found")
+		raise RequestError(f"Page '{url}' was not found")
 
 	return StoryPage(url, soup)
