@@ -11,7 +11,6 @@ from .storypage import (
 
 from .storysearch import (
 	get_search_results,
-	Chapter,
 	SearchResult
 )
 

@@ -4,14 +4,31 @@ import locale
 import typing
 import datetime as dt
 import html
+import string
+
+
+def stringify_slots_class(cls):
+	"""
+	Format a class which defines __slots__ for the sake of debugging
+
+	:returns:
+		Return the class formatted as 'ClassName(attribute=value,...)'
+	"""
+	return f"{cls.__class__.__name__}({', '.join([f'{ele}={getattr(cls, ele)}' for ele in cls.__slots__])})"
 
 
 def unescape_html(s: str) -> str:
-	return html.unescape(s)
+	return html.unescape(s).strip()
 
 
 def split_at(s: str, sep: str) -> list[str]:
 	return [x.strip() for x in s.split(sep)]
+
+
+def encode_querystring(s: str) -> str:
+	allowed_characters: str = string.ascii_letters + string.digits + "_"
+
+	return "".join([char.lower() for char in s.strip().replace(" ", "_") if char in allowed_characters])
 
 
 def save_image(image_data, path) -> typing.Union[str, None]:

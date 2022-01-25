@@ -4,14 +4,6 @@ import urllib.parse
 from manganelo.common.constants import ROOT_URL
 
 
-def get(url):
-    return requests.get(url, stream=True, timeout=10)
-
-
-def search(title):
-    return get(f"{ROOT_URL}search/story/{title}")
-
-
 def get_image(url):
     header = {
         'Accept': 'image/png,image/svg+xml,image/*;q=0.8,video/*;q=0.8,*/*;q=0.5',

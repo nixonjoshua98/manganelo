@@ -2,15 +2,9 @@ import manganelo
 
 home = manganelo.get_home_page()
 
-for x in home:
-    print(x)
-
-
-"""results = manganelo.get_search_results("Naruto")
+results = manganelo.get_search_results("Naruto")
 
 for r in results:
-    print(r.title, r.views)
-
     chapters = r.chapter_list()
 
     icon_path = r.download_icon("./icon.png")
@@ -18,4 +12,4 @@ for r in results:
     for c in chapters:
         print(f"#{c.chapter} | {c.title}")
 
-        chapter_path = c.download(f"./Chapter {c.chapter}.pdf")"""
+        chapter_path = c.download(f"./Chapter {c.chapter}.pdf")

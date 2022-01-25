@@ -1,6 +1,6 @@
 import os
 import tempfile
-
+import requests
 from bs4 import BeautifulSoup
 
 from PIL import Image
@@ -14,7 +14,7 @@ from manganelo.common import utils
 def download_chapter(url, path):
 	path = utils.validate_path(path)
 
-	r = siterequests.get(url)
+	r = requests.get(url)
 
 	soup = BeautifulSoup(r.content, "html.parser")
 
