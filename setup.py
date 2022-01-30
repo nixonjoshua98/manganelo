@@ -27,6 +27,7 @@ setup(
 
 	install_requires=[
 		"bs4",
+		"deprecated",
 		"requests",
 		"reportlab",
 		"pillow"
