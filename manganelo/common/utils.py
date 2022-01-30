@@ -7,16 +7,6 @@ import html
 import string
 
 
-def stringify_slots_class(cls):
-	"""
-	Format a class which defines __slots__ for the sake of debugging
-
-	:returns:
-		Return the class formatted as 'ClassName(attribute=value,...)'
-	"""
-	return f"{cls.__class__.__name__}({', '.join([f'{ele}={getattr(cls, ele)}' for ele in cls.__slots__])})"
-
-
 def unescape_html(s: str) -> str:
 	return html.unescape(s).strip()
 
