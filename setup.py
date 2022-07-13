@@ -9,7 +9,7 @@ def read_file(file):
 setup(
 	name="manganelo",
 	packages=find_packages(),
-	version="1.20.3",
+	version="1.21.0",
 	license="MIT",
 
 	description="Unofficial API for the Manganelo/Manganato website.",
@@ -27,7 +27,6 @@ setup(
 
 	install_requires=[
 		"bs4",
-		"deprecated",
 		"requests",
 		"reportlab",
 		"pillow"

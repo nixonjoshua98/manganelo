@@ -1,11 +1,12 @@
 import ast
 
-import functools as ft
 import datetime as dt
 
 from .chapter import Chapter
-from manganelo import siterequests
+from .storypage import StoryPage
+
 from manganelo.common import utils
+from manganelo.httpclient import _default_http_client
 
 
 class SearchResult:
@@ -20,24 +21,26 @@ class SearchResult:
         self.views: int = self._parse_views(soup)
         self.updated: dt.datetime = self._parse_updated(soup)
 
-    @ft.cache
-    def chapter_list(self) -> list[Chapter]:
+    @property
+    def story_page(self) -> StoryPage:
         from manganelo.storypage import get_story_page  # Circular import
 
-        return get_story_page(self.url).chapter_list()
+        return get_story_page(self.url)
+
+    @property
+    def chapter_list(self) -> list[Chapter]:
+        return self.story_page.chapter_list
 
     def download_icon(self, path: str):
-        if img := siterequests.get_image(self.icon_url):
+        if img := _default_http_client.fetch_image(self.icon_url):
             return utils.save_image(img, path)
 
     @staticmethod
     def _parse_authors(soup) -> list[str]:
         authors = soup.find("span", class_="text-nowrap item-author")
         if authors:
-          txt = authors.text
-          return utils.split_at(txt, ",")
-        else:
-          return []
+            return utils.split_at(authors.text, ",")
+        return []
 
     @staticmethod
     def _parse_views(soup) -> int:

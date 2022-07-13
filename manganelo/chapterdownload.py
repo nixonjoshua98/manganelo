@@ -1,20 +1,19 @@
 import os
 import tempfile
-import requests
 from bs4 import BeautifulSoup
 
 from PIL import Image
 
 from reportlab.pdfgen import canvas
 
-from manganelo import siterequests
 from manganelo.common import utils
+from manganelo.httpclient import _default_http_client
 
 
 def download_chapter(url, path):
 	path = utils.validate_path(path)
 
-	r = requests.get(url)
+	r = _default_http_client.request("GET", url)
 
 	soup = BeautifulSoup(r.content, "html.parser")
 
@@ -39,7 +38,7 @@ def _download_images(dir_, urls: list):
 	images = []
 
 	for i, url in enumerate(urls):
-		image = siterequests.get_image(url)
+		image = _default_http_client.fetch_image(url)
 
 		if image is not None:
 			ext = url.split(".")[-1]

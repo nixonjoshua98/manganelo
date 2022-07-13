@@ -1,15 +1,14 @@
 import ast
 import datetime as dt
-from deprecated import deprecated
 
-from .. import siterequests
-from ..common import utils
-from .chapter import Chapter
-from ..common.types import NumberType
+from manganelo.common import utils
+from manganelo.models.chapter import Chapter
+from manganelo.common.types import NumberType
+from manganelo.httpclient import _default_http_client
 
 
 class StoryPage:
-    __slots__ = ("url", "title", "icon_url", "description", "genres", "views", "authors", "updated", "chapters")
+    __slots__ = ("url", "title", "icon_url", "description", "genres", "views", "authors", "updated", "chapter_list")
 
     def __init__(self, url, soup):
         self.url: str = url
@@ -20,14 +19,10 @@ class StoryPage:
         self.views: NumberType = self._parse_views(soup)
         self.authors: list[str] = self._parse_authors(soup)
         self.updated: dt.datetime = self._parse_updated(soup)
-        self.chapters: list[Chapter] = self._parse_chapters(soup)
+        self.chapter_list: list[Chapter] = self._parse_chapters(soup)
 
-    @deprecated(reason="Use the chapters attribute instead for this class")
-    def chapter_list(self):
-        return self.chapters
-
-    def download_icon(self, *, path: str):
-        if img := siterequests.get_image(self.icon_url):
+    def download_icon(self, path: str):
+        if img := _default_http_client.fetch_image(self.icon_url):
             return utils.save_image(img, path)
 
     @staticmethod
