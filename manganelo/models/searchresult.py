@@ -32,9 +32,12 @@ class SearchResult:
 
     @staticmethod
     def _parse_authors(soup) -> list[str]:
-        txt = soup.find("span", class_="text-nowrap item-author").text
-
-        return utils.split_at(txt, ",")
+        authors = soup.find("span", class_="text-nowrap item-author")
+        if authors:
+          txt = authors.text
+          return utils.split_at(txt, ",")
+        else:
+          return []
 
     @staticmethod
     def _parse_views(soup) -> int:

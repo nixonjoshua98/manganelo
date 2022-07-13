@@ -32,15 +32,14 @@ class StoryPage:
 
     @staticmethod
     def _parse_authors(soup):
-        values = soup.find("table", class_="variations-tableInfo").find_all("td", class_="table-value")
-        author = values[1]
+        authors_row = soup.find("i", class_="info-author").findNext("td", class_="table-value")
 
-        return [e.strip() for e in author.text.split(",")]
+        return [e.strip() for e in authors_row.text.split(" - ")]
 
     @staticmethod
     def _parse_genres(soup):
-        values = soup.find("table", class_="variations-tableInfo").find_all("td", class_="table-value")
-        genres = values[3].find_all("a", class_="a-h")
+        genres_row = soup.find("i", class_="info-genres").findNext("td", class_="table-value")
+        genres = genres_row.find_all("a", class_="a-h")
 
         return [e.text.strip() for e in genres]
 
