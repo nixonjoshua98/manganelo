@@ -9,7 +9,7 @@ def read_file(file):
 setup(
 	name="manganelo",
 	packages=find_packages(),
-	version="1.22.0",
+	version="1.22.2",
 	license="MIT",
 
 	description="Unofficial API for the Manganelo/Manganato website.",
