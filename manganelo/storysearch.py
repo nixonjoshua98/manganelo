@@ -16,4 +16,4 @@ def get_search_results(title: str) -> list[SearchResult]:
 
 	soup = BeautifulSoup(r.content, "html.parser")
 
-	return [SearchResult(ele) for ele in soup.find_all(class_="search-story-item")]
+	return [SearchResult.from_soup(ele) for ele in soup.find_all(class_="search-story-item")]

@@ -9,7 +9,7 @@ def read_file(file):
 setup(
 	name="manganelo",
 	packages=find_packages(),
-	version="1.21.0",
+	version="1.22.0",
 	license="MIT",
 
 	description="Unofficial API for the Manganelo/Manganato website.",
@@ -17,19 +17,22 @@ setup(
 	long_description_content_type="text/markdown",
 
 	author="Joshua Nixon",
-	author_email="joshuanixonofficial@gmail.com",
+	author_email="nixonjoshua98@gmail.com",
 
 	url="https://github.com/nixonjoshua98/manganelo",
 
 	download_url="https://github.com/nixonjoshua98/manganelo/releases",
 
-	keywords=["manga", "manganelo", "scrapper", "web", "mangakakalot", "thread", "comic", "manhwa", "manganato"],
+	keywords=[
+		"manga", "manganelo", "scrapper", "web", "mangakakalot", "thread", "comic", "manhwa", "manganato", "manhwa"
+	],
 
 	install_requires=[
 		"bs4",
 		"requests",
 		"reportlab",
-		"pillow"
+		"pillow",
+		"pydantic"
 	],
 
 	classifiers=[

@@ -5,6 +5,28 @@ import typing
 import datetime as dt
 import html
 import string
+import ast
+import contextlib as cl
+
+
+def parse_number(number_string: str):
+	with cl.suppress(Exception):
+		return ast.literal_eval(number_string)
+
+	number_string, unit = number_string[:-1], number_string[-1].upper()
+
+	multiplier = {
+		"B": 1_000_000_000,
+		"M": 1_000_000,
+		"K": 1_000
+	}.get(unit, 1)
+
+	with cl.suppress(Exception):
+		return int(float(number_string) * multiplier)
+
+	return -1
+
+
 
 
 def unescape_html(s: str) -> str:

@@ -1,5 +1,3 @@
-import ast
-
 import datetime as dt
 
 from .chapter import Chapter
@@ -7,19 +5,17 @@ from .storypage import StoryPage
 
 from manganelo.common import utils
 from manganelo.httpclient import _default_http_client
+from pydantic import BaseModel
 
 
-class SearchResult:
-    __slots__ = ("title", "url", "icon_url", "authors", "rating", "views", "updated")
-
-    def __init__(self, soup):
-        self.title: str = soup.find(class_="item-img").get("title")
-        self.url: str = soup.find(class_="item-img").get("href")
-        self.icon_url: str = soup.find("img", class_="img-loading").get("src")
-        self.authors: list[str] = self._parse_authors(soup)
-        self.rating: float = float(soup.find("em", class_="item-rate").text)
-        self.views: int = self._parse_views(soup)
-        self.updated: dt.datetime = self._parse_updated(soup)
+class SearchResult(BaseModel):
+    title: str
+    url: str
+    icon_url: str
+    authors: list[str]
+    rating: float
+    views: int
+    updated: dt.datetime
 
     @property
     def story_page(self) -> StoryPage:
@@ -36,20 +32,45 @@ class SearchResult:
             return utils.save_image(img, path)
 
     @staticmethod
-    def _parse_authors(soup) -> list[str]:
-        authors = soup.find("span", class_="text-nowrap item-author")
-        if authors:
-            return utils.split_at(authors.text, ",")
-        return []
+    def from_soup(soup):
+        return SearchResult(
+            title=_parse_title(soup),
+            url=_parse_url(soup),
+            icon_url=_parse_icon_url(soup),
+            authors=_parse_authors(soup),
+            rating=_parse_rating(soup),
+            views=_parse_views(soup),
+            updated=_parse_updated(soup)
+        )
 
-    @staticmethod
-    def _parse_views(soup) -> int:
-        s = soup.find_all("span", class_="text-nowrap item-time")[-1].text
 
-        return ast.literal_eval(s.replace("View : ", "").replace(",", ""))
+def _parse_title(soup):
+    return soup.find(class_="item-img").get("title")
 
-    @staticmethod
-    def _parse_updated(soup) -> dt.datetime:
-        s = soup.find("span", class_="text-nowrap item-time").text
 
-        return utils.parse_date(s, "Updated : %b %d,%Y - %H:%M")
+def _parse_url(soup):
+    return soup.find(class_="item-img").get("href")
+
+
+def _parse_icon_url(soup):
+    return soup.find("img", class_="img-loading").get("src")
+
+
+def _parse_authors(soup):
+    authors = soup.find("span", class_="text-nowrap item-author")
+    return utils.split_at(authors.text, ",") if authors else []
+
+
+def _parse_rating(soup):
+    return float(soup.find("em", class_="item-rate").text)
+
+
+def _parse_views(soup):
+    s = soup.find_all("span", class_="text-nowrap item-time")[-1].text
+    number_string = s.replace("View : ", "").replace(",", "")
+    return utils.parse_number(number_string)
+
+
+def _parse_updated(soup):
+    s = soup.find("span", class_="text-nowrap item-time").text
+    return utils.parse_date(s, "Updated : %b %d,%Y - %H:%M")
