@@ -1,15 +1,15 @@
-import os
-import shutil
-import locale
-import typing
-import datetime as dt
-import html
-import string
 import ast
 import contextlib as cl
+import datetime as dt
+import html
+import locale
+import os
+import shutil
+import string
+import typing
 
 
-def parse_number(number_string: str):
+def parse_views(number_string: str) -> int:
 	with cl.suppress(Exception):
 		return ast.literal_eval(number_string)
 
@@ -25,8 +25,6 @@ def parse_number(number_string: str):
 		return int(float(number_string) * multiplier)
 
 	return -1
-
-
 
 
 def unescape_html(s: str) -> str:

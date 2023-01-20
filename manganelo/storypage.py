@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup
 
+from manganelo.httpclient import _default_http_client
+
 from .errors import RequestError
 from .models import StoryPage
-from manganelo.httpclient import _default_http_client
 
 
 def get_story_page(url) -> StoryPage:
@@ -13,4 +14,4 @@ def get_story_page(url) -> StoryPage:
 	if "404" in soup.find("title").text:
 		raise RequestError(f"Page '{url}' was not found")
 
-	return StoryPage(url, soup)
+	return StoryPage.from_soup(url, soup)

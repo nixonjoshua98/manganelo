@@ -1,8 +1,9 @@
-import requests
-import time
-import threading
 import collections
+import threading
+import time
 import urllib.parse
+
+import requests
 
 from manganelo.common.constants import ROOT_URL
 

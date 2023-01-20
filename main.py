@@ -1,8 +1,5 @@
 import manganelo
 
-home = manganelo.get_home_page()
+page = manganelo.get_story_page("https://chapmanganato.com/manga-ng952689")
 
-results = manganelo.get_search_results("attack on titan")
-
-for r in results:
-    print(r)
+print(page)

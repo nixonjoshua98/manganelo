@@ -1,7 +1,7 @@
 from manganelo.common.constants import HOME_TOOLTIPS_URL
-from manganelo.models import HomeStoryTooltip
 from manganelo.errors import RequestError
 from manganelo.httpclient import _default_http_client
+from manganelo.models import HomeStoryTooltip
 
 
 def get_home_page() -> list[HomeStoryTooltip]:

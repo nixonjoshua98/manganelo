@@ -1,11 +1,12 @@
 import datetime as dt
 
-from .chapter import Chapter
-from .storypage import StoryPage
+from pydantic import BaseModel
 
 from manganelo.common import utils
 from manganelo.httpclient import _default_http_client
-from pydantic import BaseModel
+
+from .chapter import Chapter
+from .storypage import StoryPage
 
 
 class SearchResult(BaseModel):
@@ -68,7 +69,7 @@ def _parse_rating(soup):
 def _parse_views(soup):
     s = soup.find_all("span", class_="text-nowrap item-time")[-1].text
     number_string = s.replace("View : ", "").replace(",", "")
-    return utils.parse_number(number_string)
+    return utils.parse_views(number_string)
 
 
 def _parse_updated(soup):

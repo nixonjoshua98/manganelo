@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 
 def read_file(file):
@@ -9,7 +9,7 @@ def read_file(file):
 setup(
 	name="manganelo",
 	packages=find_packages(),
-	version="1.22.2",
+	version="1.23",
 	license="MIT",
 
 	description="Unofficial API for the Manganelo/Manganato website.",
